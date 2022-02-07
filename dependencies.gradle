@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compile "com.github.GTNewHorizons:OpenComputers:master-SNAPSHOT:api"
-    runtime "com.github.GTNewHorizons:OpenComputers:master-SNAPSHOT:dev"
+    compile "com.github.GTNewHorizons:OpenComputers:1.7.5.21-GTNH:api"
+    runtime "com.github.GTNewHorizons:OpenComputers:1.7.5.21-GTNH:dev"
     compile "com.azanor.baubles:Baubles:1.7.10-1.0.1.10:deobf"
 }
