@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compile "com.github.GTNewHorizons:OpenComputers:1.7.5.21-GTNH:api"
-    runtime "com.github.GTNewHorizons:OpenComputers:1.7.5.21-GTNH:dev"
-    compile "com.azanor.baubles:Baubles:1.7.10-1.0.1.10:deobf"
+    compileOnly('com.github.GTNewHorizons:OpenComputers:1.7.5.23-GTNH:api') { transitive = false}
+    compile('com.github.GTNewHorizons:Baubles:1.0.1.14:dev')
+    runtime('com.github.GTNewHorizons:OpenComputers:1.7.5.23-GTNH:dev') { transitive = false}
 }

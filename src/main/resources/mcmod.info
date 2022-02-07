@@ -1,5 +1,4 @@
-[
-{
+[{
   "modid": "${modId}",
   "name": "${modName}",
   "description": "Addon for Open Computers which adds Augmented Reality features to Minecraft.",
@@ -8,12 +7,8 @@
   "url": "http://starchasers.pl/OpenGlasses/",
   "updateUrl": "",
   "authorList": ["marcin212","magik6000"],
-  "credits": "
-    Great thanks to:
-    Axoi, for the textures.
-    alucard87pl, for help with the wiki.",
+  "credits": "Great thanks to: Axoi, for the textures, alucard87pl, for help with the wiki.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
-}
-]
+}]
