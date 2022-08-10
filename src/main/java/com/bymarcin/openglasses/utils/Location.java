@@ -61,7 +61,7 @@ public class Location {
 		x = nbt.getInteger("locX");
 		y = nbt.getInteger("locY");
 		z = nbt.getInteger("locZ");
-		dimID = nbt.getInteger("locDim");
+		dimID = nbt.getInteger("locDIM");
 		uniqueKey = nbt.getLong("uniqueKey");
 		return this;
 	}
