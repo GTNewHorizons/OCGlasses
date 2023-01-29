@@ -18,68 +18,71 @@ import com.bymarcin.openglasses.surface.ServerSurface;
 import com.bymarcin.openglasses.tileentity.OpenGlassesTerminalTileEntity;
 
 public class OpenGlassesTerminalBlock extends BlockContainer {
-	IIcon side;
-	IIcon top;
-	public OpenGlassesTerminalBlock() {
-		super(Material.iron);
-		setCreativeTab(OpenGlasses.creativeTab);
-		setBlockName("openglassesterminal");
-		setHardness(3.0F);
-	}
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {
-		return new OpenGlassesTerminalTileEntity();
-	}
+    IIcon side;
+    IIcon top;
 
-	@Override
-	public void registerBlockIcons(IIconRegister register) {
-		blockIcon = register.registerIcon(OpenGlasses.MODID + ":glasses_bottom");
-		side = register.registerIcon(OpenGlasses.MODID + ":glasses_side");
-		top = register.registerIcon(OpenGlasses.MODID + ":glasses_top");
-	}
+    public OpenGlassesTerminalBlock() {
+        super(Material.iron);
+        setCreativeTab(OpenGlasses.creativeTab);
+        setBlockName("openglassesterminal");
+        setHardness(3.0F);
+    }
 
-	@Override
-	public IIcon getIcon(int side, int metadata) {
-		switch(side){
-			case 0: return blockIcon;
-			case 1: return top;
-			default: return this.side;
-		}
-	}
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return new OpenGlassesTerminalTileEntity();
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <T> T getTileEntity(IBlockAccess world, int x, int y, int z, Class<T> T) {
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (te != null && T.isAssignableFrom(te.getClass())) {
-			return (T) te;
-		}
-		return null;
-	}
+    @Override
+    public void registerBlockIcons(IIconRegister register) {
+        blockIcon = register.registerIcon(OpenGlasses.MODID + ":glasses_bottom");
+        side = register.registerIcon(OpenGlasses.MODID + ":glasses_side");
+        top = register.registerIcon(OpenGlasses.MODID + ":glasses_top");
+    }
 
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		if (player.isSneaking() || world.isRemote)
-			return false;
-		OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
-		if (te == null)
-			return false;
-		ItemStack glassesStack = player.getHeldItem();
-		if (glassesStack != null) {
-			Item item = glassesStack.getItem();
-			if (item instanceof OpenGlassesItem) {
-				((OpenGlassesItem) item).bindToTerminal(glassesStack, te.getTerminalUUID());
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public IIcon getIcon(int side, int metadata) {
+        switch (side) {
+            case 0:
+                return blockIcon;
+            case 1:
+                return top;
+            default:
+                return this.side;
+        }
+    }
 
-	@Override
-	public void onBlockPreDestroy(World world, int x, int y, int z, int m) {
-		OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
-		if(te!=null)
-			ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), te.getTerminalUUID());
-	}
-	
+    @SuppressWarnings("unchecked")
+    public static <T> T getTileEntity(IBlockAccess world, int x, int y, int z, Class<T> T) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && T.isAssignableFrom(te.getClass())) {
+            return (T) te;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+            float hitY, float hitZ) {
+        if (player.isSneaking() || world.isRemote) return false;
+        OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
+        if (te == null) return false;
+        ItemStack glassesStack = player.getHeldItem();
+        if (glassesStack != null) {
+            Item item = glassesStack.getItem();
+            if (item instanceof OpenGlassesItem) {
+                ((OpenGlassesItem) item).bindToTerminal(glassesStack, te.getTerminalUUID());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onBlockPreDestroy(World world, int x, int y, int z, int m) {
+        OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
+        if (te != null) ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), te.getTerminalUUID());
+    }
+
 }

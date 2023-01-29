@@ -4,5 +4,5 @@ dependencies {
     compileOnly('com.github.GTNewHorizons:OpenComputers:1.7.5.23-GTNH:api') { transitive = false}
     compile('com.github.GTNewHorizons:Baubles:1.0.1.14:dev')
     compile("com.github.GTNewHorizons:TinkersConstruct:1.9.0.12-GTNH:dev")
-    runtime('com.github.GTNewHorizons:OpenComputers:1.7.5.23-GTNH:dev') { transitive = false}
+    runtimeOnly('com.github.GTNewHorizons:OpenComputers:1.7.5.23-GTNH:dev') { transitive = false}
 }

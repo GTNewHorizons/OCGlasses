@@ -6,9 +6,11 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
 
 public class RenderUtils {
+
     private static final RenderItem itemRender = new RenderItem();
     private static final RenderBlocks blockRender = new RenderBlocks();
     private static final Minecraft mc = Minecraft.getMinecraft();
@@ -17,7 +19,8 @@ public class RenderUtils {
         blockRender.useInventoryTint = false;
     }
 
-    public static void renderItemStackOnGUI(ItemStack stack, float x, float y, float scale, float angle) throws RuntimeException {
+    public static void renderItemStackOnGUI(ItemStack stack, float x, float y, float scale, float angle)
+            throws RuntimeException {
         if (stack == null) return;
 
         TextureManager tm = mc.getTextureManager();

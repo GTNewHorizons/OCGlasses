@@ -1,24 +1,25 @@
 package com.bymarcin.openglasses.surface.widgets.component.face;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
 import com.bymarcin.openglasses.surface.IRenderableWidget;
 import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
-import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IItemable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IPositionable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IRotatable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IScalable;
 import com.bymarcin.openglasses.utils.RenderUtils;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 public class ItemIcon extends Widget implements IItemable, IPositionable, IScalable, IRotatable {
+
     ItemStack itemStack;
     float x;
     float y;
@@ -92,7 +93,7 @@ public class ItemIcon extends Widget implements IItemable, IPositionable, IScala
 
     @Override
     public boolean setItem(ItemStack newItem) {
-        if(newItem == null || newItem.getItem() == null) {
+        if (newItem == null || newItem.getItem() == null) {
             return false;
         }
         this.itemStack = newItem;

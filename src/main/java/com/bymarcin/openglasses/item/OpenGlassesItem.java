@@ -6,103 +6,103 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 
+import tconstruct.library.accessory.IAccessory;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-import tconstruct.library.accessory.IAccessory;
+
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.event.ClientEventHandler;
-import com.bymarcin.openglasses.surface.ServerSurface;
 import com.bymarcin.openglasses.utils.Location;
 
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@Optional.InterfaceList({
-    @Optional.Interface(iface="baubles.api.IBauble",modid="Baubles"),
-    @Optional.Interface(iface="tconstruct.library.accessory.IAccessory",modid="TConstruct")
-})
+@Optional.InterfaceList({ @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
+        @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct") })
 public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
 
-	public OpenGlassesItem() {
-		super(ArmorMaterial.CHAIN, 0, 0);
-		setMaxDamage(0);
-		setMaxStackSize(1);
-		setHasSubtypes(true);
-		setCreativeTab(OpenGlasses.creativeTab);
-		setUnlocalizedName("openglasses");
-	}
-	
-	@Override
-	public void registerIcons(IIconRegister register) {
-		itemIcon = register.registerIcon(OpenGlasses.MODID + ":glasses");
-	}
+    public OpenGlassesItem() {
+        super(ArmorMaterial.CHAIN, 0, 0);
+        setMaxDamage(0);
+        setMaxStackSize(1);
+        setHasSubtypes(true);
+        setCreativeTab(OpenGlasses.creativeTab);
+        setUnlocalizedName("openglasses");
+    }
 
-	@Override
-	public IIcon getIcon(ItemStack stack, int pass) {
-		return itemIcon;
-	}
-	
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-		return OpenGlasses.MODID + ":textures/models/glasses.png";
-	}
+    @Override
+    public void registerIcons(IIconRegister register) {
+        itemIcon = register.registerIcon(OpenGlasses.MODID + ":glasses");
+    }
 
-	public static Location getUUID(ItemStack itemStack){
-		NBTTagCompound tag = getItemTag(itemStack);
-		if (!tag.hasKey("X") || !tag.hasKey("Y") || ! tag.hasKey("Z") || ! tag.hasKey("uniqueKey")) return null;
-		return new Location(tag.getInteger("X"),tag.getInteger("Y"),tag.getInteger("Z"),tag.getInteger("DIM"), tag.getLong("uniqueKey"));
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
-		super.addInformation(itemStack, player, list, par4);
-		Location uuid = getUUID(itemStack);
-		if (uuid != null){
-			list.add("Link to:");
-			for(String s : uuid.toArrayString()){
-				list.add(s);
-			}
-		}
-	}
+    @Override
+    public IIcon getIcon(ItemStack stack, int pass) {
+        return itemIcon;
+    }
 
-	public static NBTTagCompound getItemTag(ItemStack stack) {
-		if (stack.stackTagCompound == null)
-			stack.stackTagCompound = new NBTTagCompound();
-		return stack.stackTagCompound;
-	}
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+        return OpenGlasses.MODID + ":textures/models/glasses.png";
+    }
 
-	public void bindToTerminal(ItemStack glass, Location uuid) {
-		NBTTagCompound tag = getItemTag(glass);
-		tag.setInteger("X", uuid.x);
-		tag.setInteger("Y", uuid.y);
-		tag.setInteger("Z", uuid.z);
-		tag.setInteger("DIM", uuid.dimID);
-		tag.setLong("uniqueKey", uuid.uniqueKey);
-	}
+    public static Location getUUID(ItemStack itemStack) {
+        NBTTagCompound tag = getItemTag(itemStack);
+        if (!tag.hasKey("X") || !tag.hasKey("Y") || !tag.hasKey("Z") || !tag.hasKey("uniqueKey")) return null;
+        return new Location(
+                tag.getInteger("X"),
+                tag.getInteger("Y"),
+                tag.getInteger("Z"),
+                tag.getInteger("DIM"),
+                tag.getLong("uniqueKey"));
+    }
 
-	@Override
-	@Optional.Method(modid = "TConstruct")
-	public boolean canEquipAccessory(ItemStack itemStack, int slot) {
-		return slot == 0;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
+        super.addInformation(itemStack, player, list, par4);
+        Location uuid = getUUID(itemStack);
+        if (uuid != null) {
+            list.add("Link to:");
+            for (String s : uuid.toArrayString()) {
+                list.add(s);
+            }
+        }
+    }
+
+    public static NBTTagCompound getItemTag(ItemStack stack) {
+        if (stack.stackTagCompound == null) stack.stackTagCompound = new NBTTagCompound();
+        return stack.stackTagCompound;
+    }
+
+    public void bindToTerminal(ItemStack glass, Location uuid) {
+        NBTTagCompound tag = getItemTag(glass);
+        tag.setInteger("X", uuid.x);
+        tag.setInteger("Y", uuid.y);
+        tag.setInteger("Z", uuid.z);
+        tag.setInteger("DIM", uuid.dimID);
+        tag.setLong("uniqueKey", uuid.uniqueKey);
+    }
+
+    @Override
+    @Optional.Method(modid = "TConstruct")
+    public boolean canEquipAccessory(ItemStack itemStack, int slot) {
+        return slot == 0;
+    }
 
     /**
-     * This method return the type of bauble this is.
-     * Type is used to determine the slots it can go into.
+     * This method return the type of bauble this is. Type is used to determine the slots it can go into.
      *
      * @param itemstack
      */
     @Override
-    @Optional.Method(modid="Baubles")
+    @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType(ItemStack itemstack) {
         return BaubleType.AMULET;
     }
@@ -114,9 +114,8 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      * @param player
      */
     @Override
-    @Optional.Method(modid="Baubles")
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-    }
+    @Optional.Method(modid = "Baubles")
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {}
 
     /**
      * This method is called when the bauble is equipped by a player
@@ -125,13 +124,12 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      * @param player
      */
     @Override
-    @Optional.Method(modid="Baubles")
+    @Optional.Method(modid = "Baubles")
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
-        if(!player.worldObj.isRemote)
-            return;
+        if (!player.worldObj.isRemote) return;
 
         if (player instanceof EntityPlayer)
-            ClientEventHandler.equiped((EntityPlayer)player, OpenGlassesItem.getUUID(itemstack));
+            ClientEventHandler.equiped((EntityPlayer) player, OpenGlassesItem.getUUID(itemstack));
     }
 
     /**
@@ -141,13 +139,11 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      * @param player
      */
     @Override
-    @Optional.Method(modid="Baubles")
+    @Optional.Method(modid = "Baubles")
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
-        if(!player.worldObj.isRemote)
-            return;
+        if (!player.worldObj.isRemote) return;
 
-        if (player instanceof EntityPlayer)
-            ClientEventHandler.unEquiped((EntityPlayer)player);
+        if (player instanceof EntityPlayer) ClientEventHandler.unEquiped((EntityPlayer) player);
     }
 
     /**
@@ -157,7 +153,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      * @param player
      */
     @Override
-    @Optional.Method(modid="Baubles")
+    @Optional.Method(modid = "Baubles")
     public boolean canEquip(ItemStack itemstack, EntityLivingBase player) {
         return true;
     }
@@ -169,7 +165,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      * @param player
      */
     @Override
-    @Optional.Method(modid="Baubles")
+    @Optional.Method(modid = "Baubles")
     public boolean canUnequip(ItemStack itemstack, EntityLivingBase player) {
         return true;
     }

@@ -9,37 +9,40 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TerminalStatusPacket extends Packet<TerminalStatusPacket, IMessage>{
-	TerminalStatus status;
-	
-	public TerminalStatusPacket() {}
-	
-	public TerminalStatusPacket(TerminalStatus status) {
-		this.status = status;
-	}
-	
-	@Override
-	protected void read() throws IOException {
-		status = TerminalStatus.values()[readInt()];
-	}
+public class TerminalStatusPacket extends Packet<TerminalStatusPacket, IMessage> {
 
-	@Override
-	protected void write() throws IOException {
-		writeInt(status.ordinal());
-	}
+    TerminalStatus status;
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	protected IMessage executeOnClient() {
-		ClientSurface.instances.setPowered(status==TerminalStatus.HavePower?true:false);
-		return null;
-	}
+    public TerminalStatusPacket() {}
 
-	@Override
-	protected IMessage executeOnServer() {
-		return null;
-	}
-	public enum TerminalStatus{
-		HavePower,NoPower;
-	}
+    public TerminalStatusPacket(TerminalStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    protected void read() throws IOException {
+        status = TerminalStatus.values()[readInt()];
+    }
+
+    @Override
+    protected void write() throws IOException {
+        writeInt(status.ordinal());
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    protected IMessage executeOnClient() {
+        ClientSurface.instances.setPowered(status == TerminalStatus.HavePower ? true : false);
+        return null;
+    }
+
+    @Override
+    protected IMessage executeOnServer() {
+        return null;
+    }
+
+    public enum TerminalStatus {
+        HavePower,
+        NoPower;
+    }
 }

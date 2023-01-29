@@ -5,16 +5,16 @@ import li.cil.oc.api.machine.Context;
 
 import com.bymarcin.openglasses.lua.LuaFunction;
 
-public class GetID extends LuaFunction{
+public class GetID extends LuaFunction {
 
-	@Override
-	public Object[] call(Context context, Arguments arguments) {
-		return new Object[]{getSelf().getWidgetRef()};
-	}
+    @Override
+    public Object[] call(Context context, Arguments arguments) {
+        return new Object[] { getSelf().getWidgetRef() };
+    }
 
-	@Override
-	public String getName() {
-		return "getID";
-	}
+    @Override
+    public String getName() {
+        return "getID";
+    }
 
 }
