@@ -1,7 +1,6 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
-import java.lang.invoke.WrongMethodTypeException;
 
 import net.minecraft.entity.player.EntityPlayer;
 
