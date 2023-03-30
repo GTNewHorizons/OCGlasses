@@ -1,2 +1,4 @@
 tile.openglassesterminal.name=Glasses Terminal
 item.openglasses.name=AR Glasses
+key.openglasses.interact=Free Cursor
+key.categories.openGlasses=OC GLasses
