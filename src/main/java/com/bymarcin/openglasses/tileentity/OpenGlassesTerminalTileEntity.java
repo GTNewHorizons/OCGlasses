@@ -95,6 +95,12 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
             node.sendToReachable("computer.signal", "hud_keyboard", user, character, key);
         }
     }
+
+    public void onBlockInteract(String user, int x, int y, int z, int side) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "block_interact", user, x, y, z, side);
+        }
+    }
     // @Callback
     // @Optional.Method(modid = "OpenComputers")
     // public Object[] greet(Context context, Arguments args) {

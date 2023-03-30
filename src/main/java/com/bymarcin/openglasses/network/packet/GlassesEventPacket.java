@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.lang.invoke.WrongMethodTypeException;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -15,7 +16,8 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
         EQUIPED_GLASSES,
         UNEQUIPED_GLASSES,
         INTERACT_OVERLAY,
-        KEYBOARD_INTERACT_OVERLAY,;
+        KEYBOARD_INTERACT_OVERLAY,
+        BLOCK_INTERACT,;
     }
 
     EventType eventType;
@@ -62,6 +64,12 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 key = readInt();
                 character = (char) readInt();
                 return;
+            case BLOCK_INTERACT:
+                x = readInt();
+                y = readInt();
+                button = readInt();
+                type = readInt();
+                return;
         }
 
     }
@@ -90,6 +98,12 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 writeInt(key);
                 writeInt(character);
                 break;
+            case BLOCK_INTERACT:
+                writeInt(x);
+                writeInt(y);
+                writeInt(button);
+                writeInt(type);
+                break;
         }
     }
 
@@ -113,7 +127,8 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
             case INTERACT_OVERLAY:
                 ServerSurface.instance.playerHudInteract(player, x, y, button, type);
                 break;
-            default:
+            case BLOCK_INTERACT:
+                ServerSurface.instance.playerBlockInteract(player, x, y, button, type);
                 break;
         }
         return null;

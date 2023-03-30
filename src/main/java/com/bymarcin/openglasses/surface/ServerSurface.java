@@ -65,6 +65,16 @@ public class ServerSurface {
         }
     }
 
+    public void playerBlockInteract(String playerUUID, int x, int y, int z, int side) {
+        EntityPlayerMP player = checkUUID(playerUUID);
+        if (player != null) {
+            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            if (terminal != null) {
+                terminal.onBlockInteract(player.getDisplayName(), x, y, z, side);
+            }
+        }
+    }
+
     public String[] getActivePlayers(Location l) {
         LinkedList<String> players = new LinkedList<String>();
         for (Entry<EntityPlayer, Location> p : this.players.entrySet()) {
