@@ -77,6 +77,24 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         }
     }
 
+    public void onHudInteract(String user, int x, int y, int button, int type) {
+        if (node != null) {
+            switch (type) {
+                case 0:
+                    node.sendToReachable("computer.signal", "hud_click", user, x, y, button);
+                    break;
+                case 1:
+                    node.sendToReachable("computer.signal", "hud_drag", user, x, y, button);
+                    break;
+            }
+        }
+    }
+
+    public void onHudInteractKeyboard(String user, char character, int key) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "hud_keyboard", user, character, key);
+        }
+    }
     // @Callback
     // @Optional.Method(modid = "OpenComputers")
     // public Object[] greet(Context context, Arguments args) {

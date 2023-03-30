@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import org.apache.logging.log4j.Level;
-
-import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.network.Packet;
 import com.bymarcin.openglasses.surface.ServerSurface;
 import com.bymarcin.openglasses.utils.Location;
@@ -16,17 +13,30 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
 
     public static enum EventType {
         EQUIPED_GLASSES,
-        UNEQUIPED_GLASSES;
+        UNEQUIPED_GLASSES,
+        INTERACT_OVERLAY,
+        KEYBOARD_INTERACT_OVERLAY,;
     }
 
     EventType eventType;
     Location UUID;
     String player;
 
-    public GlassesEventPacket(EventType eventType, Location UUID, EntityPlayer player) {
+    private int x, y, button, type;
+    private int key;
+    private char character;
+
+    public GlassesEventPacket(EventType eventType, Location UUID, EntityPlayer player, int x, int y, int button,
+            int type, char character, int key) {
         this.player = player.getGameProfile().getName();
         this.eventType = eventType;
         this.UUID = UUID;
+        this.x = x;
+        this.y = y;
+        this.button = button;
+        this.type = type;
+        this.character = character;
+        this.key = key;
     }
 
     public GlassesEventPacket() {}
@@ -35,20 +45,52 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
     protected void read() throws IOException {
         this.player = readString();
         this.eventType = EventType.values()[readInt()];
-        if (EventType.UNEQUIPED_GLASSES == eventType) return;
-        this.UUID = new Location(readInt(), readInt(), readInt(), readInt(), readLong());
+
+        switch (eventType) {
+            case INTERACT_OVERLAY:
+                x = readInt();
+                y = readInt();
+                button = readInt();
+                type = readInt();
+                return;
+            case UNEQUIPED_GLASSES:
+                return;
+            case EQUIPED_GLASSES:
+                this.UUID = new Location(readInt(), readInt(), readInt(), readInt(), readLong());
+                return;
+            case KEYBOARD_INTERACT_OVERLAY:
+                key = readInt();
+                character = (char) readInt();
+                return;
+        }
+
     }
 
     @Override
     protected void write() throws IOException {
         writeString(player);
         writeInt(eventType.ordinal());
-        if (EventType.UNEQUIPED_GLASSES == eventType) return;
-        writeInt(UUID.x);
-        writeInt(UUID.y);
-        writeInt(UUID.z);
-        writeInt(UUID.dimID);
-        writeLong(UUID.uniqueKey);
+
+        switch (eventType) {
+            case INTERACT_OVERLAY:
+                writeInt(x);
+                writeInt(y);
+                writeInt(button);
+                writeInt(type);
+                break;
+            case UNEQUIPED_GLASSES:
+                return;
+            case EQUIPED_GLASSES:
+                writeInt(UUID.x);
+                writeInt(UUID.y);
+                writeInt(UUID.z);
+                writeInt(UUID.dimID);
+                writeLong(UUID.uniqueKey);
+            case KEYBOARD_INTERACT_OVERLAY:
+                writeInt(key);
+                writeInt(character);
+                break;
+        }
     }
 
     @Override
@@ -58,13 +100,19 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
 
     @Override
     protected IMessage executeOnServer() {
-        OpenGlasses.logger.log(Level.INFO, "PACKET:" + eventType + ":" + player);
+        // OpenGlasses.logger.log(Level.INFO, "PACKET:" + eventType + ":" + player);
         switch (eventType) {
             case EQUIPED_GLASSES:
                 ServerSurface.instance.subscribePlayer(player, UUID);
                 break;
             case UNEQUIPED_GLASSES:
                 ServerSurface.instance.unsubscribePlayer(player);
+                break;
+            case KEYBOARD_INTERACT_OVERLAY:
+                ServerSurface.instance.playerHudKeyboardInteract(player, character, key);
+                break;
+            case INTERACT_OVERLAY:
+                ServerSurface.instance.playerHudInteract(player, x, y, button, type);
                 break;
             default:
                 break;

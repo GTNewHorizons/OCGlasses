@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 
-import com.bymarcin.openglasses.network.NetworkRegistry;
+import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket.TerminalStatus;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
@@ -45,6 +45,26 @@ public class ServerSurface {
         }
     }
 
+    public void playerHudInteract(String playerUUID, int x, int y, int button, int type) {
+        EntityPlayerMP player = checkUUID(playerUUID);
+        if (player != null) {
+            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            if (terminal != null) {
+                terminal.onHudInteract(player.getDisplayName(), x, y, button, type);
+            }
+        }
+    }
+
+    public void playerHudKeyboardInteract(String playerUUID, char character, int key) {
+        EntityPlayerMP player = checkUUID(playerUUID);
+        if (player != null) {
+            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            if (terminal != null) {
+                terminal.onHudInteractKeyboard(player.getDisplayName(), character, key);
+            }
+        }
+    }
+
     public String[] getActivePlayers(Location l) {
         LinkedList<String> players = new LinkedList<String>();
         for (Entry<EntityPlayer, Location> p : this.players.entrySet()) {
@@ -57,14 +77,14 @@ public class ServerSurface {
 
     public void sendSync(EntityPlayer p, Location coords, OpenGlassesTerminalTileEntity t) {
         WidgetUpdatePacket packet = new WidgetUpdatePacket(((OpenGlassesTerminalTileEntity) t).widgetList);
-        NetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) p);
+        GlassesNetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) p);
     }
 
     public void sendPowerInfo(Location loc, TerminalStatus status) {
         TerminalStatusPacket packet = new TerminalStatusPacket(status);
         for (Entry<EntityPlayer, Location> e : players.entrySet()) {
             if (e.getValue().equals(loc)) {
-                NetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) e.getKey());
+                GlassesNetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) e.getKey());
             }
         }
     }
@@ -72,7 +92,7 @@ public class ServerSurface {
     public void sendToUUID(WidgetUpdatePacket packet, Location UUID) {
         for (Entry<EntityPlayer, Location> e : players.entrySet()) {
             if (e.getValue().equals(UUID)) {
-                NetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) e.getKey());
+                GlassesNetworkRegistry.packetHandler.sendTo(packet, (EntityPlayerMP) e.getKey());
             }
         }
     }

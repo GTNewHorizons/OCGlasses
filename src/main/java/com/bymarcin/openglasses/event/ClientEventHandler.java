@@ -13,7 +13,7 @@ import baubles.api.BaublesApi;
 
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
-import com.bymarcin.openglasses.network.NetworkRegistry;
+import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
 import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
 import com.bymarcin.openglasses.network.packet.GlassesEventPacket.EventType;
 import com.bymarcin.openglasses.surface.ClientSurface;
@@ -82,12 +82,14 @@ public class ClientEventHandler {
     public static void unEquiped(EntityPlayer player) {
         ClientSurface.instances.haveGlasses = false;
         ClientSurface.instances.removeAllWidgets();
-        NetworkRegistry.packetHandler.sendToServer(new GlassesEventPacket(EventType.UNEQUIPED_GLASSES, null, player));
+        GlassesNetworkRegistry.packetHandler.sendToServer(
+                new GlassesEventPacket(EventType.UNEQUIPED_GLASSES, null, player, -1, -1, -1, -1, '-', -1));
     }
 
     public static void equiped(EntityPlayer player, Location uuid) {
         ClientSurface.instances.lastBind = uuid;
-        NetworkRegistry.packetHandler.sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player));
+        GlassesNetworkRegistry.packetHandler
+                .sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player, -1, -1, -1, -1, '-', -1));
         ClientSurface.instances.haveGlasses = true;
     }
 }
