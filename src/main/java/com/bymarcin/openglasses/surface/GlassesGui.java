@@ -23,7 +23,7 @@ public class GlassesGui extends GuiContainer {
 
     @Override
     public void initGui() {
-        // super.initGui();
+        // Empty GUI
     }
 
     @Override

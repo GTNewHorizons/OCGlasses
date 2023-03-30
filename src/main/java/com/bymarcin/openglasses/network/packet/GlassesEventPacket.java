@@ -100,7 +100,6 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
 
     @Override
     protected IMessage executeOnServer() {
-        // OpenGlasses.logger.log(Level.INFO, "PACKET:" + eventType + ":" + player);
         switch (eventType) {
             case EQUIPED_GLASSES:
                 ServerSurface.instance.subscribePlayer(player, UUID);
@@ -116,7 +115,6 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 break;
             default:
                 break;
-
         }
         return null;
     }
