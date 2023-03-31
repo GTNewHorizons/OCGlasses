@@ -33,7 +33,7 @@ public class ClientKeyboardEvents {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (!ClientSurface.instances.haveGlasses) return;
+        if (!ClientSurface.instances.haveGlasses) return; // No glasses equipped, do nothing
         if (interactGUIKey.isPressed()) {
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(p, 5);
@@ -50,6 +50,8 @@ public class ClientKeyboardEvents {
                                 '-',
                                 -1));
             }
+            GlassesNetworkRegistry.packetHandler
+                    .sendToServer(new GlassesEventPacket(EventType.OPEN_OVERLAY, null, p, -1, -1, -1, -1, '-', -1));
             p.openGui(OpenGlasses.instance, 0, p.getEntityWorld(), 0, 0, 0);
             return;
         }

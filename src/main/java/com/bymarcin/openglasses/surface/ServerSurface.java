@@ -75,6 +75,26 @@ public class ServerSurface {
         }
     }
 
+    public void overlayOpened(String playerUUID) {
+        EntityPlayerMP player = checkUUID(playerUUID);
+        if (player != null) {
+            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            if (terminal != null) {
+                terminal.overlayOpened(player.getDisplayName());
+            }
+        }
+    }
+
+    public void overlayClosed(String playerUUID) {
+        EntityPlayerMP player = checkUUID(playerUUID);
+        if (player != null) {
+            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            if (terminal != null) {
+                terminal.overlayClosed(player.getDisplayName());
+            }
+        }
+    }
+
     public String[] getActivePlayers(Location l) {
         LinkedList<String> players = new LinkedList<String>();
         for (Entry<EntityPlayer, Location> p : this.players.entrySet()) {

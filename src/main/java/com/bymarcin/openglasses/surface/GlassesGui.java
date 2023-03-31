@@ -59,7 +59,7 @@ public class GlassesGui extends GuiContainer {
 
     @Override
     protected void keyTyped(char character, int button) {
-        if (button == 1) { //
+        if (button == 1) { // Escape to close the window
             super.keyTyped(character, button);
         } else {
             GlassesNetworkRegistry.packetHandler.sendToServer(
@@ -74,6 +74,12 @@ public class GlassesGui extends GuiContainer {
                             character,
                             button));
         }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        GlassesNetworkRegistry.packetHandler
+                .sendToServer(new GlassesEventPacket(EventType.CLOSE_OVERLAY, null, player, -1, -1, -1, -1, '-', -1));
     }
 
     @Override

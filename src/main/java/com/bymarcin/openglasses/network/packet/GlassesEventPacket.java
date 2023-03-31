@@ -16,7 +16,9 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
         UNEQUIPED_GLASSES,
         INTERACT_OVERLAY,
         KEYBOARD_INTERACT_OVERLAY,
-        BLOCK_INTERACT,;
+        BLOCK_INTERACT,
+        OPEN_OVERLAY,
+        CLOSE_OVERLAY
     }
 
     EventType eventType;
@@ -69,6 +71,10 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 button = readInt();
                 type = readInt();
                 return;
+            case OPEN_OVERLAY:
+                return;
+            case CLOSE_OVERLAY:
+                return;
         }
 
     }
@@ -103,6 +109,10 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 writeInt(button);
                 writeInt(type);
                 break;
+            case OPEN_OVERLAY:
+                return;
+            case CLOSE_OVERLAY:
+                return;
         }
     }
 
@@ -128,6 +138,12 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 break;
             case BLOCK_INTERACT:
                 ServerSurface.instance.playerBlockInteract(player, x, y, button, type);
+                break;
+            case OPEN_OVERLAY:
+                ServerSurface.instance.overlayOpened(player);
+                break;
+            case CLOSE_OVERLAY:
+                ServerSurface.instance.overlayClosed(player);
                 break;
         }
         return null;

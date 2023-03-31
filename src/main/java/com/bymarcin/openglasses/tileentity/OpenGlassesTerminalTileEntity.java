@@ -101,6 +101,18 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
             node.sendToReachable("computer.signal", "block_interact", user, x, y, z, side);
         }
     }
+
+    public void overlayOpened(String user) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "overlay_opened", user);
+        }
+    }
+
+    public void overlayClosed(String user) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "overlay_closed", user);
+        }
+    }
     // @Callback
     // @Optional.Method(modid = "OpenComputers")
     // public Object[] greet(Context context, Arguments args) {
