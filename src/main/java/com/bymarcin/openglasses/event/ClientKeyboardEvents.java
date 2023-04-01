@@ -9,17 +9,14 @@ import org.lwjgl.input.Keyboard;
 
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket.EventType;
+import com.bymarcin.openglasses.network.packet.BlockInteractPacket;
+import com.bymarcin.openglasses.network.packet.OpenOverlayPacket;
 import com.bymarcin.openglasses.surface.ClientSurface;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ClientKeyboardEvents {
 
     public static KeyBinding interactGUIKey = new KeyBinding(
@@ -38,20 +35,10 @@ public class ClientKeyboardEvents {
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(p, 5);
             if (pos != null) {
-                GlassesNetworkRegistry.packetHandler.sendToServer(
-                        new GlassesEventPacket(
-                                EventType.BLOCK_INTERACT,
-                                null,
-                                p,
-                                pos.blockX,
-                                pos.blockY,
-                                pos.blockZ,
-                                pos.sideHit,
-                                '-',
-                                -1));
+                GlassesNetworkRegistry.packetHandler
+                        .sendToServer(new BlockInteractPacket(p, pos.blockX, pos.blockY, pos.blockZ, pos.sideHit));
             }
-            GlassesNetworkRegistry.packetHandler
-                    .sendToServer(new GlassesEventPacket(EventType.OPEN_OVERLAY, null, p, -1, -1, -1, -1, '-', -1));
+            GlassesNetworkRegistry.packetHandler.sendToServer(new OpenOverlayPacket(p));
             p.openGui(OpenGlasses.instance, 0, p.getEntityWorld(), 0, 0, 0);
             return;
         }

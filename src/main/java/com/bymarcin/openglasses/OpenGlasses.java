@@ -12,8 +12,14 @@ import org.apache.logging.log4j.Logger;
 import com.bymarcin.openglasses.block.OpenGlassesTerminalBlock;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
+import com.bymarcin.openglasses.network.packet.BlockInteractPacket;
+import com.bymarcin.openglasses.network.packet.CloseOverlayPacket;
+import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
+import com.bymarcin.openglasses.network.packet.InteractOverlayPacket;
+import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
+import com.bymarcin.openglasses.network.packet.OpenOverlayPacket;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket;
+import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
 import com.bymarcin.openglasses.proxy.CommonProxy;
 import com.bymarcin.openglasses.tileentity.OpenGlassesTerminalTileEntity;
@@ -75,9 +81,15 @@ public class OpenGlasses {
         OpenGlasses.baubles = Loader.isModLoaded("Baubles");
         OpenGlasses.tinkers = Loader.isModLoaded("TConstruct");
 
-        GlassesNetworkRegistry.registerPacket(0, GlassesEventPacket.class, Side.SERVER);
-        GlassesNetworkRegistry.registerPacket(1, WidgetUpdatePacket.class, Side.CLIENT);
-        GlassesNetworkRegistry.registerPacket(2, TerminalStatusPacket.class, Side.CLIENT);
+        GlassesNetworkRegistry.registerPacket(0, BlockInteractPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(1, CloseOverlayPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(2, EquipGlassesPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(3, InteractOverlayPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(4, KeyboardInteractOverlayPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(5, OpenOverlayPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(6, UnequipGlassesPacket.class, Side.SERVER);
+        GlassesNetworkRegistry.registerPacket(7, WidgetUpdatePacket.class, Side.CLIENT);
+        GlassesNetworkRegistry.registerPacket(8, TerminalStatusPacket.class, Side.CLIENT);
 
         GameRegistry.registerBlock(openTerminal = new OpenGlassesTerminalBlock(), "openglassesterminal");
         GameRegistry.registerTileEntity(OpenGlassesTerminalTileEntity.class, "openglassesterminal");

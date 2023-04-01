@@ -15,8 +15,8 @@ import baubles.api.BaublesApi;
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket.EventType;
+import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
+import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.utils.Location;
 
@@ -83,8 +83,7 @@ public class ClientEventHandler {
     public static void unEquiped(EntityPlayer player) {
         ClientSurface.instances.haveGlasses = false;
         ClientSurface.instances.removeAllWidgets();
-        GlassesNetworkRegistry.packetHandler.sendToServer(
-                new GlassesEventPacket(EventType.UNEQUIPED_GLASSES, null, player, -1, -1, -1, -1, '-', -1));
+        GlassesNetworkRegistry.packetHandler.sendToServer(new UnequipGlassesPacket(player));
     }
 
     public static void equiped(EntityPlayer player, Location uuid) {
@@ -93,17 +92,8 @@ public class ClientEventHandler {
                 Minecraft.getMinecraft().displayWidth,
                 Minecraft.getMinecraft().displayHeight);
         ClientSurface.instances.lastBind = uuid;
-        GlassesNetworkRegistry.packetHandler.sendToServer(
-                new GlassesEventPacket(
-                        EventType.EQUIPED_GLASSES,
-                        uuid,
-                        player,
-                        sr.getScaledWidth(),
-                        sr.getScaledHeight(),
-                        -1,
-                        -1,
-                        '-',
-                        -1));
+        GlassesNetworkRegistry.packetHandler
+                .sendToServer(new EquipGlassesPacket(uuid, player, sr.getScaledWidth(), sr.getScaledHeight()));
         ClientSurface.instances.haveGlasses = true;
     }
 }

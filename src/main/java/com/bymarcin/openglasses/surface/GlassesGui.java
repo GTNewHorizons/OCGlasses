@@ -4,8 +4,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket.EventType;
+import com.bymarcin.openglasses.network.packet.CloseOverlayPacket;
+import com.bymarcin.openglasses.network.packet.InteractOverlayPacket;
+import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,16 +44,14 @@ public class GlassesGui extends GuiContainer {
 
     @Override
     protected void mouseClicked(int x, int y, int button) {
-        GlassesNetworkRegistry.packetHandler.sendToServer(
-                new GlassesEventPacket(EventType.INTERACT_OVERLAY, null, player, x, y, button, 0, '-', -1));
+        GlassesNetworkRegistry.packetHandler.sendToServer(new InteractOverlayPacket(player, x, y, button, 0));
     }
 
     @Override
     protected void mouseClickMove(int x, int y, int button, long time) {
         // Need to limit how often the packet is sent
         if (dragTimer != time) {
-            GlassesNetworkRegistry.packetHandler.sendToServer(
-                    new GlassesEventPacket(EventType.INTERACT_OVERLAY, null, player, x, y, button, 1, '-', -1));
+            GlassesNetworkRegistry.packetHandler.sendToServer(new InteractOverlayPacket(player, x, y, button, 1));
             dragTimer = time;
         }
     }
@@ -62,24 +61,14 @@ public class GlassesGui extends GuiContainer {
         if (button == 1) { // Escape to close the window
             super.keyTyped(character, button);
         } else {
-            GlassesNetworkRegistry.packetHandler.sendToServer(
-                    new GlassesEventPacket(
-                            EventType.KEYBOARD_INTERACT_OVERLAY,
-                            null,
-                            player,
-                            -1,
-                            -1,
-                            -1,
-                            -1,
-                            character,
-                            button));
+            GlassesNetworkRegistry.packetHandler
+                    .sendToServer(new KeyboardInteractOverlayPacket(player, character, button));
         }
     }
 
     @Override
     public void onGuiClosed() {
-        GlassesNetworkRegistry.packetHandler
-                .sendToServer(new GlassesEventPacket(EventType.CLOSE_OVERLAY, null, player, -1, -1, -1, -1, '-', -1));
+        GlassesNetworkRegistry.packetHandler.sendToServer(new CloseOverlayPacket(player));
     }
 
     @Override
