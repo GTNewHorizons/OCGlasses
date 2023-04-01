@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -87,9 +88,10 @@ public class ClientEventHandler {
     }
 
     public static void equiped(EntityPlayer player, Location uuid) {
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
         ClientSurface.instances.lastBind = uuid;
         GlassesNetworkRegistry.packetHandler
-                .sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player, -1, -1, -1, -1, '-', -1));
+                .sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player, sr.getScaledWidth(), sr.getScaledHeight(), -1, -1, '-', -1));
         ClientSurface.instances.haveGlasses = true;
     }
 }

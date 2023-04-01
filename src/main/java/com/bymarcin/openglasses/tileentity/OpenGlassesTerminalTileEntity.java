@@ -65,9 +65,9 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
                 UUID.randomUUID().getMostSignificantBits());
     }
 
-    public void onGlassesPutOn(String user) {
+    public void onGlassesPutOn(String user, int width, int height) {
         if (node != null) {
-            node.sendToReachable("computer.signal", "glasses_on", user);
+            node.sendToReachable("computer.signal", "glasses_on", user, width, height);
         }
     }
 

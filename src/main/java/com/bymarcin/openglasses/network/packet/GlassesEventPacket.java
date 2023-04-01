@@ -60,6 +60,8 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 return;
             case EQUIPED_GLASSES:
                 this.UUID = new Location(readInt(), readInt(), readInt(), readInt(), readLong());
+                this.x = readInt();
+                this.y = readInt();
                 return;
             case KEYBOARD_INTERACT_OVERLAY:
                 key = readInt();
@@ -99,6 +101,8 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
                 writeInt(UUID.z);
                 writeInt(UUID.dimID);
                 writeLong(UUID.uniqueKey);
+                writeInt(x);
+                writeInt(y);
             case KEYBOARD_INTERACT_OVERLAY:
                 writeInt(key);
                 writeInt(character);
@@ -125,7 +129,7 @@ public class GlassesEventPacket extends Packet<GlassesEventPacket, IMessage> {
     protected IMessage executeOnServer() {
         switch (eventType) {
             case EQUIPED_GLASSES:
-                ServerSurface.instance.subscribePlayer(player, UUID);
+                ServerSurface.instance.subscribePlayer(player, UUID, x, y);
                 break;
             case UNEQUIPED_GLASSES:
                 ServerSurface.instance.unsubscribePlayer(player);

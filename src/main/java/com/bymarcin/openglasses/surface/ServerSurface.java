@@ -21,7 +21,7 @@ public class ServerSurface {
 
     HashMap<EntityPlayer, Location> players = new HashMap<EntityPlayer, Location>();
 
-    public void subscribePlayer(String playerUUID, Location UUID) {
+    public void subscribePlayer(String playerUUID, Location UUID, int width, int height) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
             OpenGlassesTerminalTileEntity terminal = UUID.getTerminal();
@@ -29,7 +29,7 @@ public class ServerSurface {
                 players.put(player, UUID);
                 sendSync(player, UUID, terminal);
                 sendPowerInfo(UUID, terminal.isPowered() ? TerminalStatus.HavePower : TerminalStatus.NoPower);
-                terminal.onGlassesPutOn(player.getDisplayName());
+                terminal.onGlassesPutOn(player.getDisplayName(), width, height);
             }
         }
     }
