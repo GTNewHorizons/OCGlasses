@@ -108,9 +108,9 @@ public class ClientSurface {
         GL11.glPopMatrix();
     }
 
-    public static MovingObjectPosition getBlockCoordsLookingAt(EntityPlayer player) {
+    public static MovingObjectPosition getBlockCoordsLookingAt(EntityPlayer player, int distance) {
         MovingObjectPosition objectMouseOver;
-        objectMouseOver = player.rayTrace(200, 1);
+        objectMouseOver = player.rayTrace(distance, 1);
         if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectType.BLOCK) {
             return objectMouseOver;
         }

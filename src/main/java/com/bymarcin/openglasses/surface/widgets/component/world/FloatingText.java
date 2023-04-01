@@ -136,7 +136,7 @@ public class FloatingText extends Widget implements IViewDistance, ILookable, I3
                 return;
             }
             if (isLookingAtEnable) {
-                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player);
+                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player, 200);
                 if (pos == null || pos.blockX != lookingAtX || pos.blockY != lookingAtY || pos.blockZ != lookingAtZ)
                     return;
             }

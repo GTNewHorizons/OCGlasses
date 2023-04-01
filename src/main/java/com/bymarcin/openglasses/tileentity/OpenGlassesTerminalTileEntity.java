@@ -65,9 +65,9 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
                 UUID.randomUUID().getMostSignificantBits());
     }
 
-    public void onGlassesPutOn(String user) {
+    public void onGlassesPutOn(String user, int width, int height) {
         if (node != null) {
-            node.sendToReachable("computer.signal", "glasses_on", user);
+            node.sendToReachable("computer.signal", "glasses_on", user, width, height);
         }
     }
 
@@ -77,6 +77,42 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         }
     }
 
+    public void onHudInteract(String user, int x, int y, int button, int type) {
+        if (node != null) {
+            switch (type) {
+                case 0:
+                    node.sendToReachable("computer.signal", "hud_click", user, x, y, button);
+                    break;
+                case 1:
+                    node.sendToReachable("computer.signal", "hud_drag", user, x, y, button);
+                    break;
+            }
+        }
+    }
+
+    public void onHudInteractKeyboard(String user, char character, int key) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "hud_keyboard", user, character, key);
+        }
+    }
+
+    public void onBlockInteract(String user, int x, int y, int z, int side) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "block_interact", user, x, y, z, side);
+        }
+    }
+
+    public void overlayOpened(String user) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "overlay_opened", user);
+        }
+    }
+
+    public void overlayClosed(String user) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "overlay_closed", user);
+        }
+    }
     // @Callback
     // @Optional.Method(modid = "OpenComputers")
     // public Object[] greet(Context context, Arguments args) {

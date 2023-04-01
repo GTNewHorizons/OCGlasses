@@ -102,7 +102,7 @@ public class Cube3D extends Widget
         @Override
         public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
             if (OGUtils.inRange(playerX, playerY, playerZ, x, y, z, distance)) {
-                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player);
+                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player, 200);
                 if (isLookingAtEnable
                         && (pos == null || pos.blockX != lookAtX || pos.blockY != lookAtY || pos.blockZ != lookAtZ))
                     return;

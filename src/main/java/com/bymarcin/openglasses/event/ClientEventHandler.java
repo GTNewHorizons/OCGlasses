@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -13,9 +14,9 @@ import baubles.api.BaublesApi;
 
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
-import com.bymarcin.openglasses.network.NetworkRegistry;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket;
-import com.bymarcin.openglasses.network.packet.GlassesEventPacket.EventType;
+import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
+import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
+import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.utils.Location;
 
@@ -82,12 +83,17 @@ public class ClientEventHandler {
     public static void unEquiped(EntityPlayer player) {
         ClientSurface.instances.haveGlasses = false;
         ClientSurface.instances.removeAllWidgets();
-        NetworkRegistry.packetHandler.sendToServer(new GlassesEventPacket(EventType.UNEQUIPED_GLASSES, null, player));
+        GlassesNetworkRegistry.packetHandler.sendToServer(new UnequipGlassesPacket(player));
     }
 
     public static void equiped(EntityPlayer player, Location uuid) {
+        ScaledResolution sr = new ScaledResolution(
+                Minecraft.getMinecraft(),
+                Minecraft.getMinecraft().displayWidth,
+                Minecraft.getMinecraft().displayHeight);
         ClientSurface.instances.lastBind = uuid;
-        NetworkRegistry.packetHandler.sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player));
+        GlassesNetworkRegistry.packetHandler
+                .sendToServer(new EquipGlassesPacket(uuid, player, sr.getScaledWidth(), sr.getScaledHeight()));
         ClientSurface.instances.haveGlasses = true;
     }
 }
