@@ -88,10 +88,22 @@ public class ClientEventHandler {
     }
 
     public static void equiped(EntityPlayer player, Location uuid) {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+        ScaledResolution sr = new ScaledResolution(
+                Minecraft.getMinecraft(),
+                Minecraft.getMinecraft().displayWidth,
+                Minecraft.getMinecraft().displayHeight);
         ClientSurface.instances.lastBind = uuid;
-        GlassesNetworkRegistry.packetHandler
-                .sendToServer(new GlassesEventPacket(EventType.EQUIPED_GLASSES, uuid, player, sr.getScaledWidth(), sr.getScaledHeight(), -1, -1, '-', -1));
+        GlassesNetworkRegistry.packetHandler.sendToServer(
+                new GlassesEventPacket(
+                        EventType.EQUIPED_GLASSES,
+                        uuid,
+                        player,
+                        sr.getScaledWidth(),
+                        sr.getScaledHeight(),
+                        -1,
+                        -1,
+                        '-',
+                        -1));
         ClientSurface.instances.haveGlasses = true;
     }
 }
