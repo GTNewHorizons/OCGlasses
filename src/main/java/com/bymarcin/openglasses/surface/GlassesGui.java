@@ -3,6 +3,8 @@ package com.bymarcin.openglasses.surface;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 
+import org.lwjgl.input.Keyboard;
+
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
 import com.bymarcin.openglasses.network.packet.CloseOverlayPacket;
 import com.bymarcin.openglasses.network.packet.InteractOverlayPacket;
@@ -11,10 +13,13 @@ import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import com.bymarcin.openglasses.event.ClientKeyboardEvents;
+
 @SideOnly(Side.CLIENT)
 public class GlassesGui extends GuiContainer {
 
     private EntityPlayer player;
+    private boolean holdScreen = true;
     private long dragTimer = 0;
 
     public GlassesGui(EntityPlayer player) {
@@ -39,6 +44,13 @@ public class GlassesGui extends GuiContainer {
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
+        boolean keyState = Keyboard.isKeyDown(com.bymarcin.openglasses.event.ClientKeyboardEvents.interactGUIKey.getKeyCode());
+        if (keyState && holdScreen) { //Flag to keep the GUI open when it wasn't opened with the interactGUIKey
+            holdScreen = false;
+        }
+        if (!keyState && !holdScreen) {
+            player.closeScreen();
+        }
         // Empty GUI
     }
 
