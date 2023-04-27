@@ -1,9 +1,9 @@
 package com.bymarcin.openglasses.surface.widgets.core.luafunction;
 
+import com.bymarcin.openglasses.lua.LuaFunction;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
-
-import com.bymarcin.openglasses.lua.LuaFunction;
 
 public class GetID extends LuaFunction {
 

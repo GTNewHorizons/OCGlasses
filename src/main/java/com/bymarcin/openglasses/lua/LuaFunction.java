@@ -1,12 +1,12 @@
 package com.bymarcin.openglasses.lua;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.machine.Value;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.bymarcin.openglasses.utils.Location;
+
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.machine.Value;
 
 public abstract class LuaFunction implements Value {
 

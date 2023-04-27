@@ -4,14 +4,6 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import li.cil.oc.api.API;
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Connector;
-import li.cil.oc.api.network.Visibility;
-import li.cil.oc.api.prefab.TileEntityEnvironment;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.bymarcin.openglasses.OpenGlasses;
@@ -34,7 +26,15 @@ import com.bymarcin.openglasses.surface.widgets.component.world.Line3D;
 import com.bymarcin.openglasses.surface.widgets.component.world.Quad3D;
 import com.bymarcin.openglasses.surface.widgets.component.world.Triangle3D;
 import com.bymarcin.openglasses.utils.Location;
+
 import cpw.mods.fml.common.Optional;
+import li.cil.oc.api.API;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.Connector;
+import li.cil.oc.api.network.Visibility;
+import li.cil.oc.api.prefab.TileEntityEnvironment;
 
 @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {

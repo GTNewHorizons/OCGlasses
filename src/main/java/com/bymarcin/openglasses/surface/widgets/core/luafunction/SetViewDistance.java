@@ -1,12 +1,12 @@
 package com.bymarcin.openglasses.surface.widgets.core.luafunction;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Context;
-
 import com.bymarcin.openglasses.lua.LuaFunction;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IViewDistance;
+
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Context;
 
 public class SetViewDistance extends LuaFunction {
 
