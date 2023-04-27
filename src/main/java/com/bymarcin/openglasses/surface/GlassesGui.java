@@ -13,8 +13,6 @@ import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import com.bymarcin.openglasses.event.ClientKeyboardEvents;
-
 @SideOnly(Side.CLIENT)
 public class GlassesGui extends GuiContainer {
 
@@ -44,8 +42,9 @@ public class GlassesGui extends GuiContainer {
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
-        boolean keyState = Keyboard.isKeyDown(com.bymarcin.openglasses.event.ClientKeyboardEvents.interactGUIKey.getKeyCode());
-        if (keyState && holdScreen) { //Flag to keep the GUI open when it wasn't opened with the interactGUIKey
+        boolean keyState = Keyboard
+                .isKeyDown(com.bymarcin.openglasses.event.ClientKeyboardEvents.interactGUIKey.getKeyCode());
+        if (keyState && holdScreen) { // Flag to keep the GUI open when it wasn't opened with the interactGUIKey
             holdScreen = false;
         }
         if (!keyState && !holdScreen) {

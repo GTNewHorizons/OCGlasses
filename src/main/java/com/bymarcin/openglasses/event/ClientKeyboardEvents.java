@@ -16,7 +16,6 @@ import com.bymarcin.openglasses.surface.ClientSurface;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
 
 public class ClientKeyboardEvents {
 
@@ -29,14 +28,15 @@ public class ClientKeyboardEvents {
             "key.openglasses.interactToggle",
             Keyboard.KEY_C,
             "key.categories.openGlasses");
+
     public ClientKeyboardEvents() {
         ClientRegistry.registerKeyBinding(interactGUIKey);
         ClientRegistry.registerKeyBinding(interactGUIKeyToggle);
     }
 
-	@SubscribeEvent
-	public void onKeyDown(InputEvent.KeyInputEvent event) {
-        if (interactGUIKey.isPressed() || interactGUIKeyToggle.isPressed() ) {
+    @SubscribeEvent
+    public void onKeyDown(InputEvent.KeyInputEvent event) {
+        if (interactGUIKey.isPressed() || interactGUIKeyToggle.isPressed()) {
             if (!ClientSurface.instances.haveGlasses) return; // No glasses equipped, do nothing
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(p, 5);
@@ -48,6 +48,6 @@ public class ClientKeyboardEvents {
             p.openGui(OpenGlasses.instance, 0, p.getEntityWorld(), 0, 0, 0);
             return;
         }
-	}
-    
+    }
+
 }
