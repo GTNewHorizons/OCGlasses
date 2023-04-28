@@ -1,8 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compileOnly('com.github.GTNewHorizons:OpenComputers:1.9.2-GTNH:api') { transitive = false}
+    compile('com.github.GTNewHorizons:OpenComputers:1.9.2-GTNH:dev')
     compile('com.github.GTNewHorizons:Baubles:1.0.1.16:dev')
     compile("com.github.GTNewHorizons:TinkersConstruct:1.9.29-GTNH:dev")
-    runtimeOnly('com.github.GTNewHorizons:OpenComputers:1.9.2-GTNH:dev') { transitive = false}
 }
