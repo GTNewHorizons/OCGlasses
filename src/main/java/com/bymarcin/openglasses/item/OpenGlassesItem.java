@@ -11,17 +11,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 
-import tconstruct.library.accessory.IAccessory;
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.event.ClientEventHandler;
 import com.bymarcin.openglasses.utils.Location;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.library.accessory.IAccessory;
 
 @Optional.InterfaceList({ @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
         @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct") })

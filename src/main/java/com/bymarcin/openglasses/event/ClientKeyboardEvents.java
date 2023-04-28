@@ -21,17 +21,23 @@ public class ClientKeyboardEvents {
 
     public static KeyBinding interactGUIKey = new KeyBinding(
             "key.openglasses.interact",
+            Keyboard.KEY_LMENU,
+            "key.categories.openGlasses");
+
+    public static KeyBinding interactGUIKeyToggle = new KeyBinding(
+            "key.openglasses.interactToggle",
             Keyboard.KEY_C,
             "key.categories.openGlasses");
 
     public ClientKeyboardEvents() {
         ClientRegistry.registerKeyBinding(interactGUIKey);
+        ClientRegistry.registerKeyBinding(interactGUIKeyToggle);
     }
 
     @SubscribeEvent
-    public void onKeyInput(InputEvent.KeyInputEvent event) {
-        if (!ClientSurface.instances.haveGlasses) return; // No glasses equipped, do nothing
-        if (interactGUIKey.isPressed()) {
+    public void onKeyDown(InputEvent.KeyInputEvent event) {
+        if (interactGUIKey.isPressed() || interactGUIKeyToggle.isPressed()) {
+            if (!ClientSurface.instances.haveGlasses) return; // No glasses equipped, do nothing
             EntityPlayer p = Minecraft.getMinecraft().thePlayer;
             MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(p, 5);
             if (pos != null) {
@@ -43,4 +49,5 @@ public class ClientKeyboardEvents {
             return;
         }
     }
+
 }

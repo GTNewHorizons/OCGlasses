@@ -8,10 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-import tconstruct.armor.ArmorProxyClient;
-import tconstruct.armor.player.TPlayerStats;
-import baubles.api.BaublesApi;
-
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
@@ -20,8 +16,11 @@ import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.utils.Location;
 
+import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import tconstruct.armor.ArmorProxyClient;
+import tconstruct.armor.player.TPlayerStats;
 
 public class ClientEventHandler {
 

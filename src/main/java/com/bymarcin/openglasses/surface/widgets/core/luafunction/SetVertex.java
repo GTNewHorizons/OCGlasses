@@ -1,12 +1,12 @@
 package com.bymarcin.openglasses.surface.widgets.core.luafunction;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Context;
-
 import com.bymarcin.openglasses.lua.LuaFunction;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I2DVertex;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DVertex;
+
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Context;
 
 public class SetVertex extends LuaFunction {
 

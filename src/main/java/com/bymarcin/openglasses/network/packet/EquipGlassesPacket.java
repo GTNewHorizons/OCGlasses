@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import com.bymarcin.openglasses.network.Packet;
 import com.bymarcin.openglasses.surface.ServerSurface;
 import com.bymarcin.openglasses.utils.Location;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class EquipGlassesPacket extends Packet<EquipGlassesPacket, IMessage> {

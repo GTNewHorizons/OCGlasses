@@ -9,6 +9,7 @@ import com.bymarcin.openglasses.event.ClientEventHandler;
 import com.bymarcin.openglasses.event.ClientKeyboardEvents;
 import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.surface.GlassesGui;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class ClientProxy extends CommonProxy {
