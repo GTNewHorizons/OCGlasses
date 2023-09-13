@@ -5,8 +5,6 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 
-import org.lwjgl.input.Keyboard;
-
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
 import com.bymarcin.openglasses.network.packet.BlockInteractPacket;
@@ -21,12 +19,12 @@ public class ClientKeyboardEvents {
 
     public static KeyBinding interactGUIKey = new KeyBinding(
             "key.openglasses.interact",
-            Keyboard.KEY_LMENU,
+            0,
             "key.categories.openGlasses");
 
     public static KeyBinding interactGUIKeyToggle = new KeyBinding(
             "key.openglasses.interactToggle",
-            Keyboard.KEY_C,
+            0,
             "key.categories.openGlasses");
 
     public ClientKeyboardEvents() {
@@ -38,15 +36,14 @@ public class ClientKeyboardEvents {
     public void onKeyDown(InputEvent.KeyInputEvent event) {
         if (interactGUIKey.isPressed() || interactGUIKeyToggle.isPressed()) {
             if (!ClientSurface.instances.haveGlasses) return; // No glasses equipped, do nothing
-            EntityPlayer p = Minecraft.getMinecraft().thePlayer;
-            MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(p, 5);
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player, 5);
             if (pos != null) {
                 GlassesNetworkRegistry.packetHandler
-                        .sendToServer(new BlockInteractPacket(p, pos.blockX, pos.blockY, pos.blockZ, pos.sideHit));
+                        .sendToServer(new BlockInteractPacket(player, pos.blockX, pos.blockY, pos.blockZ, pos.sideHit));
             }
-            GlassesNetworkRegistry.packetHandler.sendToServer(new OpenOverlayPacket(p));
-            p.openGui(OpenGlasses.instance, 0, p.getEntityWorld(), 0, 0, 0);
-            return;
+            GlassesNetworkRegistry.packetHandler.sendToServer(new OpenOverlayPacket(player));
+            player.openGui(OpenGlasses.instance, 0, player.getEntityWorld(), 0, 0, 0);
         }
     }
 
