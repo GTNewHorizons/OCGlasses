@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,13 +12,13 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class KeyboardInteractOverlayPacket extends Packet<KeyboardInteractOverlayPacket, IMessage> {
 
-    String player;
+    private UUID playerUUID;
 
     private int key;
     private char character;
 
     public KeyboardInteractOverlayPacket(EntityPlayer player, char character, int key) {
-        this.player = player.getGameProfile().getName();
+        this.playerUUID = player.getGameProfile().getId();
         this.character = character;
         this.key = key;
     }
@@ -26,14 +27,15 @@ public class KeyboardInteractOverlayPacket extends Packet<KeyboardInteractOverla
 
     @Override
     protected void read() throws IOException {
-        this.player = readString();
+        this.playerUUID = new UUID(readLong(), readLong());
         this.key = readInt();
         this.character = (char) readInt();
     }
 
     @Override
     protected void write() throws IOException {
-        writeString(player);
+        writeLong(playerUUID.getMostSignificantBits());
+        writeLong(playerUUID.getLeastSignificantBits());
         writeInt(key);
         writeInt(character);
     }
@@ -45,7 +47,7 @@ public class KeyboardInteractOverlayPacket extends Packet<KeyboardInteractOverla
 
     @Override
     protected IMessage executeOnServer() {
-        ServerSurface.instance.playerHudKeyboardInteract(player, character, key);
+        ServerSurface.instance.playerHudKeyboardInteract(playerUUID, character, key);
         return null;
     }
 }

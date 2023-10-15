@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,11 +12,11 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class BlockInteractPacket extends Packet<BlockInteractPacket, IMessage> {
 
-    String player;
+    private UUID playerUUID;
     private int x, y, z, side;
 
     public BlockInteractPacket(EntityPlayer player, int x, int y, int z, int side) {
-        this.player = player.getGameProfile().getName();
+        this.playerUUID = player.getGameProfile().getId();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -26,7 +27,7 @@ public class BlockInteractPacket extends Packet<BlockInteractPacket, IMessage> {
 
     @Override
     protected void read() throws IOException {
-        this.player = readString();
+        this.playerUUID = new UUID(readLong(), readLong());
         this.x = readInt();
         this.y = readInt();
         this.z = readInt();
@@ -35,7 +36,8 @@ public class BlockInteractPacket extends Packet<BlockInteractPacket, IMessage> {
 
     @Override
     protected void write() throws IOException {
-        writeString(player);
+        writeLong(playerUUID.getMostSignificantBits());
+        writeLong(playerUUID.getLeastSignificantBits());
         writeInt(x);
         writeInt(y);
         writeInt(z);
@@ -49,7 +51,7 @@ public class BlockInteractPacket extends Packet<BlockInteractPacket, IMessage> {
 
     @Override
     protected IMessage executeOnServer() {
-        ServerSurface.instance.playerBlockInteract(player, x, y, z, side);
+        ServerSurface.instance.playerBlockInteract(playerUUID, x, y, z, side);
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,22 +12,23 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class UnequipGlassesPacket extends Packet<UnequipGlassesPacket, IMessage> {
 
-    String player;
+    private UUID playerUUID;
 
     public UnequipGlassesPacket(EntityPlayer player) {
-        this.player = player.getGameProfile().getName();
+        this.playerUUID = player.getGameProfile().getId();
     }
 
     public UnequipGlassesPacket() {}
 
     @Override
     protected void read() throws IOException {
-        this.player = readString();
+        this.playerUUID = new UUID(readLong(), readLong());
     }
 
     @Override
     protected void write() throws IOException {
-        writeString(player);
+        writeLong(playerUUID.getMostSignificantBits());
+        writeLong(playerUUID.getLeastSignificantBits());
     }
 
     @Override
@@ -36,7 +38,7 @@ public class UnequipGlassesPacket extends Packet<UnequipGlassesPacket, IMessage>
 
     @Override
     protected IMessage executeOnServer() {
-        ServerSurface.instance.unsubscribePlayer(player);
+        ServerSurface.instance.unsubscribePlayer(playerUUID);
         return null;
     }
 

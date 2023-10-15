@@ -122,7 +122,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
     @Callback(direct = true)
     @Optional.Method(modid = "OpenComputers")
     public Object[] getBindPlayers(Context context, Arguments args) {
-        return ServerSurface.instance.getActivePlayers(getTerminalUUID());
+        return ServerSurface.instance.getActivePlayerNames(getTerminalUUID());
     }
     //
     // @Callback
@@ -157,8 +157,8 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
     @Callback(direct = true)
     @Optional.Method(modid = "OpenComputers")
     public Object[] newUniqueKey(Context context, Arguments args) {
-        String[] players = ServerSurface.instance.getActivePlayers(loc);
-        for (String p : players) {
+        UUID[] players = ServerSurface.instance.getActivePlayers(loc);
+        for (UUID p : players) {
             ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), loc);
             ServerSurface.instance.unsubscribePlayer(p);
         }

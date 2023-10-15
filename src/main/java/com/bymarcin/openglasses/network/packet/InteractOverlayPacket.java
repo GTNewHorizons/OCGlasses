@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -11,12 +12,12 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class InteractOverlayPacket extends Packet<InteractOverlayPacket, IMessage> {
 
-    String player;
+    private UUID playerUUID;
 
     private int x, y, button, type;
 
     public InteractOverlayPacket(EntityPlayer player, int x, int y, int button, int type) {
-        this.player = player.getGameProfile().getName();
+        this.playerUUID = player.getGameProfile().getId();
         this.x = x;
         this.y = y;
         this.button = button;
@@ -28,7 +29,7 @@ public class InteractOverlayPacket extends Packet<InteractOverlayPacket, IMessag
 
     @Override
     protected void read() throws IOException {
-        this.player = readString();
+        this.playerUUID = new UUID(readLong(), readLong());
         this.x = readInt();
         this.y = readInt();
         this.button = readInt();
@@ -37,7 +38,8 @@ public class InteractOverlayPacket extends Packet<InteractOverlayPacket, IMessag
 
     @Override
     protected void write() throws IOException {
-        writeString(player);
+        writeLong(playerUUID.getMostSignificantBits());
+        writeLong(playerUUID.getLeastSignificantBits());
         writeInt(x);
         writeInt(y);
         writeInt(button);
@@ -51,7 +53,7 @@ public class InteractOverlayPacket extends Packet<InteractOverlayPacket, IMessag
 
     @Override
     protected IMessage executeOnServer() {
-        ServerSurface.instance.playerHudInteract(player, x, y, button, type);
+        ServerSurface.instance.playerHudInteract(playerUUID, x, y, button, type);
         return null;
     }
 

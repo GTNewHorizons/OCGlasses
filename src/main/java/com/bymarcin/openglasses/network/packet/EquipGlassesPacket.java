@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.network.packet;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -12,14 +13,14 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 
 public class EquipGlassesPacket extends Packet<EquipGlassesPacket, IMessage> {
 
-    Location UUID;
-    String player;
+    private Location locationUUID;
+    private UUID playerUUID;
 
     private int width, height;
 
-    public EquipGlassesPacket(Location UUID, EntityPlayer player, int width, int height) {
-        this.player = player.getGameProfile().getName();
-        this.UUID = UUID;
+    public EquipGlassesPacket(Location locationUUID, EntityPlayer player, int width, int height) {
+        this.playerUUID = player.getGameProfile().getId();
+        this.locationUUID = locationUUID;
         this.width = width;
         this.height = height;
     }
@@ -28,20 +29,21 @@ public class EquipGlassesPacket extends Packet<EquipGlassesPacket, IMessage> {
 
     @Override
     protected void read() throws IOException {
-        this.player = readString();
-        this.UUID = new Location(readInt(), readInt(), readInt(), readInt(), readLong());
+        this.playerUUID = new UUID(readLong(), readLong());
+        this.locationUUID = new Location(readInt(), readInt(), readInt(), readInt(), readLong());
         this.width = readInt();
         this.height = readInt();
     }
 
     @Override
     protected void write() throws IOException {
-        writeString(player);
-        writeInt(UUID.x);
-        writeInt(UUID.y);
-        writeInt(UUID.z);
-        writeInt(UUID.dimID);
-        writeLong(UUID.uniqueKey);
+        writeLong(playerUUID.getMostSignificantBits());
+        writeLong(playerUUID.getLeastSignificantBits());
+        writeInt(locationUUID.x);
+        writeInt(locationUUID.y);
+        writeInt(locationUUID.z);
+        writeInt(locationUUID.dimID);
+        writeLong(locationUUID.uniqueKey);
         writeInt(width);
         writeInt(height);
     }
@@ -53,7 +55,7 @@ public class EquipGlassesPacket extends Packet<EquipGlassesPacket, IMessage> {
 
     @Override
     protected IMessage executeOnServer() {
-        ServerSurface.instance.subscribePlayer(player, UUID, width, height);
+        ServerSurface.instance.subscribePlayer(playerUUID, locationUUID, width, height);
         return null;
     }
 
