@@ -41,12 +41,14 @@ public class ServerSurface {
     }
 
     public void unsubscribePlayer(UUID playerUUID) {
-        EntityPlayerMP p = checkUUID(playerUUID);
-        Location l = players.remove(p);
+        Location l = players.remove(playerUUID);
         if (l != null) {
             OpenGlassesTerminalTileEntity terminal = l.getTerminal();
             if (terminal != null) {
-                terminal.onGlassesPutOff(p.getDisplayName());
+                EntityPlayerMP player = checkUUID(playerUUID);
+                if (player != null) {
+                    terminal.onGlassesPutOff(player.getDisplayName());
+                }
             }
         }
     }
@@ -54,7 +56,7 @@ public class ServerSurface {
     public void playerHudInteract(UUID playerUUID, int x, int y, int button, int type) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
-            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            OpenGlassesTerminalTileEntity terminal = players.get(playerUUID).getTerminal();
             if (terminal != null) {
                 terminal.onHudInteract(player.getDisplayName(), x, y, button, type);
             }
@@ -64,7 +66,7 @@ public class ServerSurface {
     public void playerHudKeyboardInteract(UUID playerUUID, char character, int key) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
-            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            OpenGlassesTerminalTileEntity terminal = players.get(playerUUID).getTerminal();
             if (terminal != null) {
                 terminal.onHudInteractKeyboard(player.getDisplayName(), character, key);
             }
@@ -74,7 +76,7 @@ public class ServerSurface {
     public void playerBlockInteract(UUID playerUUID, int x, int y, int z, int side) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
-            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            OpenGlassesTerminalTileEntity terminal = players.get(playerUUID).getTerminal();
             if (terminal != null) {
                 terminal.onBlockInteract(player.getDisplayName(), x, y, z, side);
             }
@@ -84,7 +86,7 @@ public class ServerSurface {
     public void overlayOpened(UUID playerUUID) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
-            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            OpenGlassesTerminalTileEntity terminal = players.get(playerUUID).getTerminal();
             if (terminal != null) {
                 terminal.overlayOpened(player.getDisplayName());
             }
@@ -94,7 +96,7 @@ public class ServerSurface {
     public void overlayClosed(UUID playerUUID) {
         EntityPlayerMP player = checkUUID(playerUUID);
         if (player != null) {
-            OpenGlassesTerminalTileEntity terminal = players.get(player).getTerminal();
+            OpenGlassesTerminalTileEntity terminal = players.get(playerUUID).getTerminal();
             if (terminal != null) {
                 terminal.overlayClosed(player.getDisplayName());
             }
