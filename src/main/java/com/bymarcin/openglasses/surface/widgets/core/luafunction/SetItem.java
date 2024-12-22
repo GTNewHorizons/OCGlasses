@@ -10,6 +10,7 @@ import li.cil.oc.api.internal.Database;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Environment;
+import li.cil.oc.api.network.Node;
 
 public class SetItem extends LuaFunction {
 
@@ -17,15 +18,17 @@ public class SetItem extends LuaFunction {
     public Object[] call(Context context, Arguments arguments) {
         Widget widget = getSelf().getWidget();
         if (widget instanceof IItemable) {
-            Environment env = context.node().network().node(arguments.checkString(0)).host();
-            if (env instanceof Database) {
-                ItemStack itemStack = ((Database) env).getStackInSlot(arguments.checkInteger(1) - 1);
-                ((IItemable) widget).setItem(itemStack);
-                getSelf().getTerminal().updateWidget(getSelf().getWidgetRef());
-                return null;
+            Node node = context.node().network().node(arguments.checkString(0));
+            if (node != null) {
+                Environment env = node.host();
+                if (env instanceof Database) {
+                    ItemStack itemStack = ((Database) env).getStackInSlot(arguments.checkInteger(1) - 1);
+                    ((IItemable) widget).setItem(itemStack);
+                    getSelf().getTerminal().updateWidget(getSelf().getWidgetRef());
+                    return null;
+                }
             }
             throw new RuntimeException("Not a database");
-
         }
         throw new RuntimeException("Component does not exists!");
     }
