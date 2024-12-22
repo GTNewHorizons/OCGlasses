@@ -9,7 +9,6 @@ import com.bymarcin.openglasses.surface.widgets.core.attribute.IItemable;
 import li.cil.oc.api.internal.Database;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Node;
 
