@@ -20,7 +20,7 @@ public class SetItem extends LuaFunction {
         Widget widget = getSelf().getWidget();
         if (widget instanceof IItemable) {
             Node node = context.node().network().node(arguments.checkString(0));
-            if (node instanceof Component) {
+            if (node != null) {
                 Environment env = node.host();
                 if (env instanceof Database) {
                     ItemStack itemStack = ((Database) env).getStackInSlot(arguments.checkInteger(1) - 1);
