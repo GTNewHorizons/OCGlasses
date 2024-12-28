@@ -1,7 +1,7 @@
 // Add your dependencies here
 
 dependencies {
-    compile('com.github.GTNewHorizons:OpenComputers:1.11.1-GTNH:dev')
+    compile('com.github.GTNewHorizons:OpenComputers:1.10.28-GTNH:dev')
     compile('com.github.GTNewHorizons:Baubles:1.0.4:dev')
-    compile("com.github.GTNewHorizons:TinkersConstruct:1.13.0-GTNH:dev")
+    compile("com.github.GTNewHorizons:TinkersConstruct:1.12.17-GTNH:dev")
 }
