@@ -39,7 +39,7 @@ import li.cil.oc.api.prefab.TileEntityEnvironment;
 @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
 
-    public HashMap<Integer, Widget> widgetList = new HashMap<Integer, Widget>();
+    public HashMap<Integer, Widget> widgetList = new HashMap<>();
     int currID = 0;
     Location loc;
     boolean isPowered;
@@ -113,39 +113,31 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
             node.sendToReachable("computer.signal", "overlay_closed", user);
         }
     }
-    // @Callback
-    // @Optional.Method(modid = "OpenComputers")
-    // public Object[] greet(Context context, Arguments args) {
-    // return new Object[]{String.format("Hello, %s!", args.checkString(0))};
-    // }
 
-    @Callback(direct = true)
+    @Callback(
+            direct = true,
+            doc = "function():string... -- Lists the name of all players currently wearing glasses linked to the terminal.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getBindPlayers(Context context, Arguments args) {
         return ServerSurface.instance.getActivePlayerNames(getTerminalUUID());
     }
-    //
-    // @Callback
-    // @Optional.Method(modid = "OpenComputers")
-    // public Object[] getObjectLimit(Context context, Arguments args){
-    //
-    // return new Object[]{};
-    // }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():number -- Returns the number of instantiated widgets.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getObjectCount(Context context, Arguments args) {
         return new Object[] { widgetList.size() };
     }
 
-    @Callback(direct = true)
+    @Callback(
+            direct = true,
+            doc = "function(id:number):boolean -- Removes the widget with the corresponding id, returning if it was successful.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] removeObject(Context context, Arguments args) {
         int id = args.checkInteger(0);
         return new Object[] { removeWidget(id) };
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function() -- Removes all widgets.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] removeAll(Context context, Arguments args) {
         currID = 0;
@@ -154,7 +146,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         return new Object[] {};
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():number -- Generates a new random UUID.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] newUniqueKey(Context context, Arguments args) {
         UUID[] players = ServerSurface.instance.getActivePlayers(loc);
@@ -168,106 +160,89 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
 
     /* Object manipulation */
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Rect2D -- Adds a new rectangle widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addRect(Context context, Arguments args) {
         Widget w = new SquareWidget();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Dot2D -- Adds a new dot widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addDot(Context context, Arguments args) {
         Widget w = new Dot();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():ItemIcon -- Adds a new item widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addItem(Context context, Arguments args) {
         Widget w = new ItemIcon();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Cube3D -- Adds a new 3D cube widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addCube3D(Context context, Arguments args) {
         Widget w = new Cube3D();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Text3D -- Adds a new floating text widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addFloatingText(Context context, Arguments args) {
         Widget w = new FloatingText();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Triangle2D -- Adds a new triangle widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addTriangle(Context context, Arguments args) {
         Widget w = new TriangleWidget();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Dot3D -- Adds a new 3D dot widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addDot3D(Context context, Arguments args) {
         Widget w = new Dot3D();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Text2D -- Adds a new text label widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addTextLabel(Context context, Arguments args) {
         Widget w = new Text();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Line3D -- Adds a new 3D line widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addLine3D(Context context, Arguments args) {
         Widget w = new Line3D();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Triangle3D -- Adds a new 3D triangle widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addTriangle3D(Context context, Arguments args) {
         Widget w = new Triangle3D();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Quad3D -- Adds a new 3D quad widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addQuad3D(Context context, Arguments args) {
         Widget w = new Quad3D();
         return addWidget(w);
     }
 
-    @Callback(direct = true)
+    @Callback(direct = true, doc = "function():Quad2D -- Adds a new quad widget to the render surface.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] addQuad(Context context, Arguments args) {
         Widget w = new Quad();
         return addWidget(w);
     }
-
-    /* User interaction */
-
-    /**
-     * @return Position relative to terminal position
-     */
-    // @Callback
-    // @Optional.Method(modid = "OpenComputers")
-    // public Object[] getUserPosition(Context context, Arguments args){
-    // return new Object[]{};
-    // }
-    //
-    // @Callback
-    // @Optional.Method(modid = "OpenComputers")
-    // public Object[] getUserLookingAt(Context context, Arguments args){
-    // return new Object[]{};
-    // }
 
     public boolean removeWidget(int id) {
         if (widgetList.containsKey(id) && widgetList.remove(id) != null) {
