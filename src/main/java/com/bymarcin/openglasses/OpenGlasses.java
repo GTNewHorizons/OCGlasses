@@ -38,8 +38,8 @@ import li.cil.oc.api.Items;
 @Mod(modid = OpenGlasses.MODID, version = OpenGlasses.VERSION, dependencies = "required-after:OpenComputers@[1.4.0,)")
 public class OpenGlasses {
 
-    public static final String MODID = "GRADLETOKEN_MODID";
-    public static final String VERSION = "GRADLETOKEN_VERSION";
+    public static final String MODID = "openglasses";
+    public static final String VERSION = OCGlassesTags.VERSION;
 
     public Configuration config;
     public static Logger logger = LogManager.getLogger(OpenGlasses.MODID);
