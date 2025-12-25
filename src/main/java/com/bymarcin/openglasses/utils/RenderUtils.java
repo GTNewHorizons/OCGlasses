@@ -26,13 +26,15 @@ public class RenderUtils {
         TextureManager tm = mc.getTextureManager();
 
         GL11.glPushMatrix();
-        GL11.glTranslatef(x, y, 0.0f);
-        GL11.glScalef(scale, scale, 1F);
-        GL11.glTranslatef(8f, 8f, 0.0f);
+        GL11.glTranslatef(x + 8.0f, y + 8.0f, 0.0f);
         GL11.glRotatef(angle, 0.0f, 0.0f, 1.0f);
+        GL11.glScalef(scale, scale, 1.0f);
+
+        GL11.glPushAttrib(GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         RenderHelper.enableGUIStandardItemLighting();
-        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, tm, stack, 0, 0);
+        itemRender.renderItemAndEffectIntoGUI(mc.fontRenderer, tm, stack, -8, -8);
         RenderHelper.disableStandardItemLighting();
+        GL11.glPopAttrib();
 
         GL11.glPopMatrix();
     }
