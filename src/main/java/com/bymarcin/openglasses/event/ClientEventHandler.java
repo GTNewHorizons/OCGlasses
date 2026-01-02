@@ -1,14 +1,15 @@
 package com.bymarcin.openglasses.event;
 
+import static com.bymarcin.openglasses.item.OpenGlassesItem.findAllEquippedGlasses;
+
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.network.GlassesNetworkRegistry;
 import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
@@ -16,11 +17,8 @@ import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.utils.Location;
 
-import baubles.api.BaublesApi;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
-import tconstruct.armor.ArmorProxyClient;
-import tconstruct.armor.player.TPlayerStats;
 
 public class ClientEventHandler {
 
@@ -35,38 +33,18 @@ public class ClientEventHandler {
         }
         tick = 0;
 
-        ItemStack glassesStack = e.player.inventory.armorInventory[3];
-        Item glasses = glassesStack != null ? glassesStack.getItem() : null;
+        List<ItemStack> glasses = findAllEquippedGlasses(e.player);
+        ItemStack glassesStack = glasses.stream().findFirst().orElse(null);
 
-        if (OpenGlasses.tinkers && !(glasses instanceof OpenGlassesItem)) {
-            IInventory inventory = TPlayerStats.get(e.player).armor;
-            for (int i = 0; i != inventory.getSizeInventory(); i++) {
-                glassesStack = e.side.isClient() ? ArmorProxyClient.armorExtended.getStackInSlot(i)
-                        : inventory.getStackInSlot(i);
-                glasses = glassesStack != null ? glassesStack.getItem() : null;
-                if (glasses instanceof OpenGlassesItem) break;
-            }
-        }
-        if (OpenGlasses.baubles && !(glasses instanceof OpenGlassesItem)) // try bauble
-        {
-            IInventory handler = BaublesApi.getBaubles(e.player);
-            if (handler != null) {
-                for (int i = 0; i < handler.getSizeInventory(); ++i) {
-                    glassesStack = handler.getStackInSlot(i);
-                    glasses = glassesStack != null ? glassesStack.getItem() : null;
-                    if (glasses instanceof OpenGlassesItem) break;
-                }
-            }
-        }
-        if (glasses instanceof OpenGlassesItem) {
+        if (glassesStack != null) {
             Location uuid = OpenGlassesItem.getUUID(glassesStack);
-            if (uuid != null && ClientSurface.instances.haveGlasses == false) {
+            boolean alreadyHasGlasses = ClientSurface.instances.haveGlasses;
+            if (uuid != null && !alreadyHasGlasses) {
                 equiped(e.player, uuid);
-            } else if (ClientSurface.instances.haveGlasses == true
-                    && (uuid == null || !uuid.equals(ClientSurface.instances.lastBind))) {
-                        unEquiped(e.player);
-                    }
-        } else if (ClientSurface.instances.haveGlasses == true) {
+            } else if (alreadyHasGlasses && (uuid == null || !uuid.equals(ClientSurface.instances.lastBind))) {
+                unEquiped(e.player);
+            }
+        } else if (ClientSurface.instances.haveGlasses) {
             unEquiped(e.player);
         }
     }

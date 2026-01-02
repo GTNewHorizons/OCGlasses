@@ -4,9 +4,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.event.ServerChatEvent;
 
 import com.bymarcin.openglasses.OpenGlasses;
+import com.bymarcin.openglasses.integration.computronics.ComputronicsHelper;
+import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.lua.LuaReference;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket.TerminalStatus;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
@@ -35,14 +41,18 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.TileEntityEnvironment;
+import pl.asie.computronics.api.chat.IChatListener;
 
-@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "pl.asie.computronics.api.chat.IChatListener", modid = "computronics"),
+        @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment implements IChatListener {
 
     public HashMap<Integer, Widget> widgetList = new HashMap<>();
     int currID = 0;
     Location loc;
     boolean isPowered;
+    int chatBoxCount = 0;
 
     public OpenGlassesTerminalTileEntity() {
         node = API.network.newNode(this, Visibility.Network).withComponent(getComponentName())
@@ -69,11 +79,23 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         if (node != null) {
             node.sendToReachable("computer.signal", "glasses_on", user, width, height);
         }
+        if (OpenGlasses.computronics) {
+            if (chatBoxCount == 0) {
+                ComputronicsHelper.register(this);
+            }
+            chatBoxCount = chatBoxCount + 1;
+        }
     }
 
     public void onGlassesPutOff(String user) {
         if (node != null) {
             node.sendToReachable("computer.signal", "glasses_off", user);
+        }
+        if (OpenGlasses.computronics) {
+            chatBoxCount = chatBoxCount - 1;
+            if (chatBoxCount == 0) {
+                ComputronicsHelper.unregister(this);
+            }
         }
     }
 
@@ -144,6 +166,39 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         widgetList.clear();
         ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), getTerminalUUID());
         return new Object[] {};
+    }
+
+    @Callback(
+            doc = "function(player_name:string, message:string):bool, string -- Sends a message as the given player. Returns true on success, or false and an error message on failure.")
+    @Optional.Method(modid = "computronics")
+    public Object[] sendChatAs(Context context, Arguments args) {
+        String playerName = args.checkString(0);
+        String message = args.checkString(1);
+
+        EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
+        if (p == null) return new Object[] { false, "Failed to find the player." };
+
+        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+
+        C01PacketChatMessage packet = new C01PacketChatMessage(message);
+        p.playerNetServerHandler.processChatMessage(packet);
+        return new Object[] { true };
+    }
+
+    @Callback(
+            doc = "function(player_name:string, message:string):bool, string -- Sends a private message to the given player. Returns true on success, or false and an error message on failure.")
+    @Optional.Method(modid = "computronics")
+    public Object[] sendMessageTo(Context context, Arguments args) {
+        String playerName = args.checkString(0);
+        String message = args.checkString(1);
+
+        EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
+        if (p == null) return new Object[] { false, "Failed to find the player." };
+
+        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+
+        p.addChatMessage(new ChatComponentText(message));
+        return new Object[] { true };
     }
 
     @Callback(direct = true, doc = "function():number -- Generates a new random UUID.")
@@ -329,12 +384,8 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         super.updateEntity();
         if (worldObj.isRemote) return;
         boolean lastStatus = isPowered;
-        if ((node() != null)
-                && ((Connector) node()).tryChangeBuffer(-widgetList.size() / 10f * OpenGlasses.energyMultiplier)) {
-            isPowered = true;
-        } else {
-            isPowered = false;
-        }
+        isPowered = (node() != null)
+                && ((Connector) node()).tryChangeBuffer(-widgetList.size() / 10f * OpenGlasses.energyMultiplier);
 
         if (lastStatus != isPowered) {
             ServerSurface.instance
@@ -346,4 +397,32 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
     public boolean isPowered() {
         return isPowered;
     }
+
+    public void onPreDestroy() {
+        if (OpenGlasses.computronics) ComputronicsHelper.unregister(this);
+    }
+
+    @Override
+    @Optional.Method(modid = "computronics")
+    public void receiveChatMessage(ServerChatEvent event) {
+        if (!worldObj.blockExists(xCoord, yCoord, zCoord)) {
+            return;
+        }
+        if (!ServerSurface.instance.isPlayerBoundAtLocation(getTerminalUUID(), event.player.getGameProfile().getId())) {
+            return;
+        }
+        if (!OpenGlassesItem.hasChaxBoxUpgrade(event.player)) {
+            return;
+        }
+        if (node() != null) {
+            node().sendToReachable("computer.signal", "chat_message", event.username, event.message);
+        }
+    }
+
+    @Override
+    @Optional.Method(modid = "computronics")
+    public boolean isValid() {
+        return true;
+    }
+
 }

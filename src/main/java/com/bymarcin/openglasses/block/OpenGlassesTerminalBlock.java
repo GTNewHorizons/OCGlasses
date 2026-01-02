@@ -82,7 +82,10 @@ public class OpenGlassesTerminalBlock extends BlockContainer {
     @Override
     public void onBlockPreDestroy(World world, int x, int y, int z, int m) {
         OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
-        if (te != null) ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), te.getTerminalUUID());
+        if (te != null) {
+            ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), te.getTerminalUUID());
+            te.onPreDestroy();
+        }
     }
 
 }
