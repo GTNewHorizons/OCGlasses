@@ -5,7 +5,10 @@ import com.bymarcin.openglasses.integration.nei.recipe.RecipHandlerOpenGlassesCh
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class NEIOpenGlassesConfig implements IConfigureNEI {
 
     @Override
@@ -20,7 +23,9 @@ public class NEIOpenGlassesConfig implements IConfigureNEI {
 
     @Override
     public void loadConfig() {
-        API.registerRecipeHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
-        API.registerUsageHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
+        if (OpenGlasses.computronics) {
+            API.registerRecipeHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
+            API.registerUsageHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
+        }
     }
 }
