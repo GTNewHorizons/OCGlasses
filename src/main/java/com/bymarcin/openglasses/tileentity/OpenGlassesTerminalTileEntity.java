@@ -178,7 +178,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+        if (!OpenGlassesItem.hasChatBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
 
         C01PacketChatMessage packet = new C01PacketChatMessage(message);
         p.playerNetServerHandler.processChatMessage(packet);
@@ -195,7 +195,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+        if (!OpenGlassesItem.hasChatBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
 
         p.addChatMessage(new ChatComponentText(message));
         return new Object[] { true };
@@ -411,7 +411,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         if (!ServerSurface.instance.isPlayerBoundAtLocation(getTerminalUUID(), event.player.getGameProfile().getId())) {
             return;
         }
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(event.player)) {
+        if (!OpenGlassesItem.hasChatBoxUpgrade(event.player)) {
             return;
         }
         if (node() != null) {

@@ -190,7 +190,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         return true;
     }
 
-    public static boolean isGlass(ItemStack item) {
+    public static boolean isGlasses(ItemStack item) {
         return item != null && item.getItem() instanceof OpenGlassesItem;
     }
 
@@ -199,7 +199,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         if (player == null) return found;
 
         ItemStack glassesStack = player.inventory.armorInventory[3];
-        if (isGlass(glassesStack)) {
+        if (isGlasses(glassesStack)) {
             found.add(glassesStack);
         }
 
@@ -208,7 +208,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
             for (int i = 0; i != inventory.getSizeInventory(); i++) {
                 glassesStack = player.worldObj.isRemote ? ArmorProxyClient.armorExtended.getStackInSlot(i)
                         : inventory.getStackInSlot(i);
-                if (isGlass(glassesStack)) {
+                if (isGlasses(glassesStack)) {
                     found.add(glassesStack);
                 }
             }
@@ -220,7 +220,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
             if (handler != null) {
                 for (int i = 0; i < handler.getSizeInventory(); ++i) {
                     glassesStack = handler.getStackInSlot(i);
-                    if (isGlass(glassesStack)) {
+                    if (isGlasses(glassesStack)) {
                         found.add(glassesStack);
                     }
                 }
@@ -233,14 +233,14 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         if (player == null) return null;
 
         ItemStack glassesStack = player.inventory.armorInventory[3];
-        if (isGlass(glassesStack)) return glassesStack;
+        if (isGlasses(glassesStack)) return glassesStack;
 
         if (OpenGlasses.tinkers) {
             IInventory inventory = TPlayerStats.get(player).armor;
             for (int i = 0; i != inventory.getSizeInventory(); i++) {
                 glassesStack = player.worldObj.isRemote ? ArmorProxyClient.armorExtended.getStackInSlot(i)
                         : inventory.getStackInSlot(i);
-                if (isGlass(glassesStack)) return glassesStack;
+                if (isGlasses(glassesStack)) return glassesStack;
             }
         }
 
@@ -250,14 +250,14 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
             if (handler != null) {
                 for (int i = 0; i < handler.getSizeInventory(); ++i) {
                     glassesStack = handler.getStackInSlot(i);
-                    if (isGlass(glassesStack)) return glassesStack;
+                    if (isGlasses(glassesStack)) return glassesStack;
                 }
             }
         }
         return null;
     }
 
-    public static boolean hasChaxBoxUpgrade(EntityPlayer player) {
+    public static boolean hasChatBoxUpgrade(EntityPlayer player) {
         return findAllEquippedGlasses(player).stream().anyMatch(OpenGlassesItem::hasChatBoxUpgrade);
     }
 }

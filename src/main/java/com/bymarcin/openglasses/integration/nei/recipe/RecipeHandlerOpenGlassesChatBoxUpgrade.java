@@ -12,7 +12,7 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.recipe.ShapelessRecipeHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class RecipHandlerOpenGlassesChatBoxUpgrade extends ShapelessRecipeHandler {
+public class RecipeHandlerOpenGlassesChatBoxUpgrade extends ShapelessRecipeHandler {
 
     CachedShapelessRecipe recipe = new CachedShapelessRecipe(
             Arrays.asList(
@@ -21,7 +21,7 @@ public class RecipHandlerOpenGlassesChatBoxUpgrade extends ShapelessRecipeHandle
                             Item.getItemFromBlock(GameRegistry.findBlock("computronics", "computronics.chatBox")))),
             OpenGlassesItem.setChatBoxUpgrade(new ItemStack(OpenGlasses.openGlasses), true));
 
-    public RecipHandlerOpenGlassesChatBoxUpgrade() {
+    public RecipeHandlerOpenGlassesChatBoxUpgrade() {
         super();
     }
 

@@ -1,7 +1,7 @@
 package com.bymarcin.openglasses.integration.nei;
 
 import com.bymarcin.openglasses.OpenGlasses;
-import com.bymarcin.openglasses.integration.nei.recipe.RecipHandlerOpenGlassesChatBoxUpgrade;
+import com.bymarcin.openglasses.integration.nei.recipe.RecipeHandlerOpenGlassesChatBoxUpgrade;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
@@ -24,8 +24,8 @@ public class NEIOpenGlassesConfig implements IConfigureNEI {
     @Override
     public void loadConfig() {
         if (OpenGlasses.computronics) {
-            API.registerRecipeHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
-            API.registerUsageHandler(new RecipHandlerOpenGlassesChatBoxUpgrade());
+            API.registerRecipeHandler(new RecipeHandlerOpenGlassesChatBoxUpgrade());
+            API.registerUsageHandler(new RecipeHandlerOpenGlassesChatBoxUpgrade());
         }
     }
 }
