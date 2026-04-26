@@ -28,7 +28,7 @@ import java.util.List;
         @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct")})
 public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
 
-    public static String chatBoxUpgradeStr = "HasChatBoxUpgrade";
+    public static final String chatBoxUpgradeStr = "HasChatBoxUpgrade";
 
     public OpenGlassesItem() {
         super(ArmorMaterial.CHAIN, 0, 0);
