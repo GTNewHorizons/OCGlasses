@@ -405,9 +405,6 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
     @Override
     @Optional.Method(modid = "computronics")
     public void receiveChatMessage(ServerChatEvent event) {
-        if (!worldObj.blockExists(xCoord, yCoord, zCoord)) {
-            return;
-        }
         if (!ServerSurface.instance.isPlayerBoundAtLocation(getTerminalUUID(), event.player.getGameProfile().getId())) {
             return;
         }
