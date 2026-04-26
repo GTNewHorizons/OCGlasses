@@ -1,10 +1,8 @@
 package com.bymarcin.openglasses.item;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.base.Splitter;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,10 +12,12 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.event.ClientEventHandler;
 import com.bymarcin.openglasses.utils.Location;
+import com.google.common.base.Splitter;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
@@ -25,7 +25,6 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.util.StatCollector;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.accessory.IAccessory;
@@ -71,8 +70,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
                 tag.getLong("uniqueKey"));
     }
 
-    private static final Splitter NEWLINE_SPLITTER = Splitter.on("\\n")
-            .omitEmptyStrings();
+    private static final Splitter NEWLINE_SPLITTER = Splitter.on("\\n").omitEmptyStrings();
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -81,7 +79,13 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         super.addInformation(itemStack, player, list, par4);
         Location uuid = getUUID(itemStack);
         if (uuid != null) {
-            String str = StatCollector.translateToLocalFormatted("tooltip.openglasses.link_to", uuid.x, uuid.y, uuid.z, uuid.dimID, uuid.uniqueKey);
+            String str = StatCollector.translateToLocalFormatted(
+                    "tooltip.openglasses.link_to",
+                    uuid.x,
+                    uuid.y,
+                    uuid.z,
+                    uuid.dimID,
+                    uuid.uniqueKey);
             for (String line : NEWLINE_SPLITTER.split(str)) {
                 list.add(line);
             }
