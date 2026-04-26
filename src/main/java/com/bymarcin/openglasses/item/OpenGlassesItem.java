@@ -1,14 +1,8 @@
 package com.bymarcin.openglasses.item;
 
-import baubles.api.BaubleType;
-import baubles.api.BaublesApi;
-import baubles.api.IBauble;
-import com.bymarcin.openglasses.OpenGlasses;
-import com.bymarcin.openglasses.event.ClientEventHandler;
-import com.bymarcin.openglasses.utils.Location;
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,14 +12,23 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+
+import com.bymarcin.openglasses.OpenGlasses;
+import com.bymarcin.openglasses.event.ClientEventHandler;
+import com.bymarcin.openglasses.utils.Location;
+
+import baubles.api.BaubleType;
+import baubles.api.BaublesApi;
+import baubles.api.IBauble;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.accessory.IAccessory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Optional.InterfaceList({@Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
-        @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct")})
+@Optional.InterfaceList({ @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles"),
+        @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct") })
 public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
 
     public static final String chatBoxUpgradeStr = "HasChatBoxUpgrade";
@@ -67,7 +70,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
 
     @Override
     @SideOnly(Side.CLIENT)
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addInformation(ItemStack itemStack, EntityPlayer player, List list, boolean par4) {
         super.addInformation(itemStack, player, list, par4);
         Location uuid = getUUID(itemStack);
@@ -134,8 +137,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
      */
     @Override
     @Optional.Method(modid = "Baubles")
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-    }
+    public void onWornTick(ItemStack itemstack, EntityLivingBase player) {}
 
     /**
      * This method is called when the bauble is equipped by a player
@@ -257,7 +259,10 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         return null;
     }
 
-    public static boolean hasChatBoxUpgrade(EntityPlayer player) {
-        return findAllEquippedGlasses(player).stream().anyMatch(OpenGlassesItem::hasChatBoxUpgrade);
+    public static boolean isPlayerLinkedToChatboxAt(EntityPlayer player, Location loc) {
+        return findAllEquippedGlasses(player).stream().filter(OpenGlassesItem::hasChatBoxUpgrade).anyMatch((s) -> {
+            Location itemLoc = OpenGlassesItem.getUUID(s);
+            return itemLoc != null && itemLoc.equals(loc);
+        });
     }
 }

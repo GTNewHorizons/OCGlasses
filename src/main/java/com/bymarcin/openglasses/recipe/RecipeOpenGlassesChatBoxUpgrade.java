@@ -12,11 +12,11 @@ import com.bymarcin.openglasses.item.OpenGlassesItem;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
+
     private static Item chatBox;
-    private static Item getChatBox()
-    {
-        if (chatBox == null)
-        {
+
+    private static Item getChatBox() {
+        if (chatBox == null) {
             chatBox = Item.getItemFromBlock(GameRegistry.findBlock("computronics", "computronics.chatBox"));
         }
         return chatBox;
@@ -69,8 +69,7 @@ public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
         for (int i = 0; i < size; i++) {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack == null || stack.getItem() == null) continue;
-            if (stack.getItem() != getChatBox())
-                continue;
+            if (stack.getItem() != getChatBox()) continue;
             return stack;
         }
         return null;

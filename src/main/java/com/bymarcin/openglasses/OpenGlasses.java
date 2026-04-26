@@ -17,6 +17,7 @@ import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
 import com.bymarcin.openglasses.network.packet.InteractOverlayPacket;
 import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
 import com.bymarcin.openglasses.network.packet.OpenOverlayPacket;
+import com.bymarcin.openglasses.network.packet.ScreenResizePacket;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket;
 import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
@@ -96,6 +97,7 @@ public class OpenGlasses {
         GlassesNetworkRegistry.registerPacket(6, UnequipGlassesPacket.class, Side.SERVER);
         GlassesNetworkRegistry.registerPacket(7, WidgetUpdatePacket.class, Side.CLIENT);
         GlassesNetworkRegistry.registerPacket(8, TerminalStatusPacket.class, Side.CLIENT);
+        GlassesNetworkRegistry.registerPacket(9, ScreenResizePacket.class, Side.SERVER);
 
         GameRegistry.registerBlock(openTerminal = new OpenGlassesTerminalBlock(), "openglassesterminal");
         GameRegistry.registerTileEntity(OpenGlassesTerminalTileEntity.class, "openglassesterminal");

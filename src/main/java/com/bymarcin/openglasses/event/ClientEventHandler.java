@@ -1,9 +1,6 @@
 package com.bymarcin.openglasses.event;
 
-import static com.bymarcin.openglasses.item.OpenGlassesItem.findAllEquippedGlasses;
 import static com.bymarcin.openglasses.item.OpenGlassesItem.findFirstEquippedGlasses;
-
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
