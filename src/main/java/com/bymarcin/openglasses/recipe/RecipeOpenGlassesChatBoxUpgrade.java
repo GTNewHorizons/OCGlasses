@@ -31,7 +31,7 @@ public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
         ItemStack glasses = findGlasses(inv);
 
         if (chatbox == null || glasses == null) return null;
-        return OpenGlassesItem.setChatBoxUpgrade(glasses, true);
+        return OpenGlassesItem.setChatBoxUpgrade(glasses.copy(), true);
     }
 
     @Override
