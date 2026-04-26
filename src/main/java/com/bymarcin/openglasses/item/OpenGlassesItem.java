@@ -1,8 +1,10 @@
 package com.bymarcin.openglasses.item;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.base.Splitter;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,6 +25,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.StatCollector;
 import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.accessory.IAccessory;
@@ -68,6 +71,9 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
                 tag.getLong("uniqueKey"));
     }
 
+    private static final Splitter NEWLINE_SPLITTER = Splitter.on("\\n")
+            .omitEmptyStrings();
+
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -75,13 +81,13 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         super.addInformation(itemStack, player, list, par4);
         Location uuid = getUUID(itemStack);
         if (uuid != null) {
-            list.add("Link to:");
-            for (String s : uuid.toArrayString()) {
-                list.add(s);
+            String str = StatCollector.translateToLocalFormatted("tooltip.openglasses.link_to", uuid.x, uuid.y, uuid.z, uuid.dimID, uuid.uniqueKey);
+            for (String line : NEWLINE_SPLITTER.split(str)) {
+                list.add(line);
             }
         }
         if (hasChatBoxUpgrade(itemStack)) {
-            list.add("Installed ChatBox");
+            list.add(StatCollector.translateToLocal("tooltip.openglasses.installed_chatbox"));
         }
     }
 
