@@ -174,7 +174,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
             return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
 
-        if (message.startsWith("/")) message = message.substring(1);
+        if (message.startsWith("/")) message = message.replaceFirst("^/+", "");
         C01PacketChatMessage packet = new C01PacketChatMessage(message);
         p.playerNetServerHandler.processChatMessage(packet);
         return new Object[] { true };
