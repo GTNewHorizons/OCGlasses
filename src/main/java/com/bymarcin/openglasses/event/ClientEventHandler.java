@@ -1,6 +1,7 @@
 package com.bymarcin.openglasses.event;
 
 import static com.bymarcin.openglasses.item.OpenGlassesItem.findAllEquippedGlasses;
+import static com.bymarcin.openglasses.item.OpenGlassesItem.findFirstEquippedGlasses;
 
 import java.util.List;
 
@@ -33,8 +34,7 @@ public class ClientEventHandler {
         }
         tick = 0;
 
-        List<ItemStack> glasses = findAllEquippedGlasses(e.player);
-        ItemStack glassesStack = glasses.stream().findFirst().orElse(null);
+        ItemStack glassesStack = findFirstEquippedGlasses(e.player);
 
         if (glassesStack != null) {
             Location uuid = OpenGlassesItem.getUUID(glassesStack);
