@@ -84,7 +84,11 @@ public class OpenGlasses {
                 .get("Energy", "energyMultiplier", 1.0, "PowerDrain= (NumberOfWidgets / 10) * energyMultiplier")
                 .getDouble(1.0);
         allowedCommands = Arrays.asList(
-                config.get("ChatBox", "allowedCommands", new String[] { "/msg", "/w", "/tell"}, "List of commands that glasses are allowed to use via the ChatBox.").getStringList());
+                config.get(
+                        "ChatBox",
+                        "allowedCommands",
+                        new String[] { "/msg", "/w", "/tell" },
+                        "List of commands that glasses are allowed to use via the ChatBox.").getStringList());
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
     }
 
