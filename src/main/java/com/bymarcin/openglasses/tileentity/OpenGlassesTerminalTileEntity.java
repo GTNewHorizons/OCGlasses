@@ -172,9 +172,15 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
         if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
-            return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+            return new Object[] { false, "Missing ChatBox Upgrade on glasses." };
 
-        if (message.startsWith("/")) message = message.replaceFirst("^/+", "");
+        if (message.startsWith("/")) {
+            int spaceIndex = message.indexOf(" ");
+            String command = (spaceIndex == -1) ? message : message.substring(0, spaceIndex);
+            if (!OpenGlasses.allowedCommands.contains(command)) {
+                return new Object[] { false, "Command forbidden." };
+            }
+        }
         C01PacketChatMessage packet = new C01PacketChatMessage(message);
         p.playerNetServerHandler.processChatMessage(packet);
         return new Object[] { true };

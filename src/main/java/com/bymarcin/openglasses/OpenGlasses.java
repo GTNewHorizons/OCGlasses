@@ -1,5 +1,8 @@
 package com.bymarcin.openglasses;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -69,6 +72,7 @@ public class OpenGlasses {
 
     public static int energyBuffer = 100;
     public static double energyMultiplier = 1;
+    public static List<String> allowedCommands;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -79,6 +83,8 @@ public class OpenGlasses {
         energyMultiplier = config
                 .get("Energy", "energyMultiplier", 1.0, "PowerDrain= (NumberOfWidgets / 10) * energyMultiplier")
                 .getDouble(1.0);
+        allowedCommands = Arrays.asList(
+                config.get("ChatBox", "allowedCommands", new String[] { "/msg", "/w", "/tell"}, "List of commands that glasses are allowed to use via the ChatBox.").getStringList());
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
     }
 
