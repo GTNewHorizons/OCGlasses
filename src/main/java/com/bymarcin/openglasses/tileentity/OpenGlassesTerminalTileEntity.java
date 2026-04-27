@@ -52,7 +52,6 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
     int currID = 0;
     Location loc;
     boolean isPowered;
-    int chatBoxCount = 0;
 
     public OpenGlassesTerminalTileEntity() {
         node = API.network.newNode(this, Visibility.Network).withComponent(getComponentName())
@@ -79,23 +78,11 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         if (node != null) {
             node.sendToReachable("computer.signal", "glasses_on", user, width, height);
         }
-        if (OpenGlasses.computronics) {
-            if (chatBoxCount == 0) {
-                ComputronicsHelper.register(this);
-            }
-            chatBoxCount = chatBoxCount + 1;
-        }
     }
 
     public void onGlassesPutOff(String user) {
         if (node != null) {
             node.sendToReachable("computer.signal", "glasses_off", user);
-        }
-        if (OpenGlasses.computronics) {
-            chatBoxCount = chatBoxCount - 1;
-            if (chatBoxCount == 0) {
-                ComputronicsHelper.unregister(this);
-            }
         }
     }
 
@@ -133,6 +120,12 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
     public void overlayClosed(String user) {
         if (node != null) {
             node.sendToReachable("computer.signal", "overlay_closed", user);
+        }
+    }
+
+    public void onResize(String user, int width, int height) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "glasses_resized", user, width, height);
         }
     }
 
@@ -178,8 +171,10 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
+            return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
 
+        if (message.startsWith("/")) message = message.replaceFirst("^/+", "");
         C01PacketChatMessage packet = new C01PacketChatMessage(message);
         p.playerNetServerHandler.processChatMessage(packet);
         return new Object[] { true };
@@ -195,7 +190,8 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(p)) return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
+            return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
 
         p.addChatMessage(new ChatComponentText(message));
         return new Object[] { true };
@@ -398,20 +394,13 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         return isPowered;
     }
 
-    public void onPreDestroy() {
-        if (OpenGlasses.computronics) ComputronicsHelper.unregister(this);
-    }
-
     @Override
     @Optional.Method(modid = "computronics")
     public void receiveChatMessage(ServerChatEvent event) {
-        if (!worldObj.blockExists(xCoord, yCoord, zCoord)) {
-            return;
-        }
         if (!ServerSurface.instance.isPlayerBoundAtLocation(getTerminalUUID(), event.player.getGameProfile().getId())) {
             return;
         }
-        if (!OpenGlassesItem.hasChaxBoxUpgrade(event.player)) {
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(event.player, getTerminalUUID())) {
             return;
         }
         if (node() != null) {
@@ -425,4 +414,19 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         return true;
     }
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        if (OpenGlasses.computronics && !this.worldObj.isRemote) {
+            ComputronicsHelper.unregister(this);
+        }
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (OpenGlasses.computronics && !this.worldObj.isRemote) {
+            ComputronicsHelper.register(this);
+        }
+    }
 }

@@ -1,8 +1,6 @@
 package com.bymarcin.openglasses.event;
 
-import static com.bymarcin.openglasses.item.OpenGlassesItem.findAllEquippedGlasses;
-
-import java.util.List;
+import static com.bymarcin.openglasses.item.OpenGlassesItem.findFirstEquippedGlasses;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -33,8 +31,7 @@ public class ClientEventHandler {
         }
         tick = 0;
 
-        List<ItemStack> glasses = findAllEquippedGlasses(e.player);
-        ItemStack glassesStack = glasses.stream().findFirst().orElse(null);
+        ItemStack glassesStack = findFirstEquippedGlasses(e.player);
 
         if (glassesStack != null) {
             Location uuid = OpenGlassesItem.getUUID(glassesStack);

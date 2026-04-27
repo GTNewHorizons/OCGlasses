@@ -12,10 +12,12 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 
 import com.bymarcin.openglasses.OpenGlasses;
 import com.bymarcin.openglasses.event.ClientEventHandler;
 import com.bymarcin.openglasses.utils.Location;
+import com.google.common.base.Splitter;
 
 import baubles.api.BaubleType;
 import baubles.api.BaublesApi;
@@ -23,6 +25,7 @@ import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import tconstruct.armor.ArmorProxyClient;
 import tconstruct.armor.player.TPlayerStats;
 import tconstruct.library.accessory.IAccessory;
 
@@ -30,7 +33,7 @@ import tconstruct.library.accessory.IAccessory;
         @Optional.Interface(iface = "tconstruct.library.accessory.IAccessory", modid = "TConstruct") })
 public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
 
-    public static String chatBoxUpgradeStr = "HasChatBoxUpgrade";
+    public static final String chatBoxUpgradeStr = "HasChatBoxUpgrade";
 
     public OpenGlassesItem() {
         super(ArmorMaterial.CHAIN, 0, 0);
@@ -67,6 +70,8 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
                 tag.getLong("uniqueKey"));
     }
 
+    private static final Splitter NEWLINE_SPLITTER = Splitter.on("\\n").omitEmptyStrings();
+
     @Override
     @SideOnly(Side.CLIENT)
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -74,13 +79,19 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         super.addInformation(itemStack, player, list, par4);
         Location uuid = getUUID(itemStack);
         if (uuid != null) {
-            list.add("Link to:");
-            for (String s : uuid.toArrayString()) {
-                list.add(s);
+            String str = StatCollector.translateToLocalFormatted(
+                    "tooltip.openglasses.link_to",
+                    uuid.x,
+                    uuid.y,
+                    uuid.z,
+                    uuid.dimID,
+                    uuid.uniqueKey);
+            for (String line : NEWLINE_SPLITTER.split(str)) {
+                list.add(line);
             }
         }
         if (hasChatBoxUpgrade(itemStack)) {
-            list.add("Installed ChatBox");
+            list.add(StatCollector.translateToLocal("tooltip.openglasses.installed_chatbox"));
         }
     }
 
@@ -191,7 +202,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         return true;
     }
 
-    public static boolean isGlass(ItemStack item) {
+    public static boolean isGlasses(ItemStack item) {
         return item != null && item.getItem() instanceof OpenGlassesItem;
     }
 
@@ -200,14 +211,18 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         if (player == null) return found;
 
         ItemStack glassesStack = player.inventory.armorInventory[3];
-        if (isGlass(glassesStack)) {
+        if (isGlasses(glassesStack)) {
             found.add(glassesStack);
         }
 
         if (OpenGlasses.tinkers) {
-            glassesStack = TPlayerStats.get(player).armor.getStackInSlot(0);
-            if (isGlass(glassesStack)) {
-                found.add(glassesStack);
+            IInventory inventory = TPlayerStats.get(player).armor;
+            for (int i = 0; i != inventory.getSizeInventory(); i++) {
+                glassesStack = player.worldObj.isRemote ? ArmorProxyClient.armorExtended.getStackInSlot(i)
+                        : inventory.getStackInSlot(i);
+                if (isGlasses(glassesStack)) {
+                    found.add(glassesStack);
+                }
             }
         }
 
@@ -217,7 +232,7 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
             if (handler != null) {
                 for (int i = 0; i < handler.getSizeInventory(); ++i) {
                     glassesStack = handler.getStackInSlot(i);
-                    if (isGlass(glassesStack)) {
+                    if (isGlasses(glassesStack)) {
                         found.add(glassesStack);
                     }
                 }
@@ -226,7 +241,38 @@ public class OpenGlassesItem extends ItemArmor implements IBauble, IAccessory {
         return found;
     }
 
-    public static boolean hasChaxBoxUpgrade(EntityPlayer player) {
-        return findAllEquippedGlasses(player).stream().anyMatch(OpenGlassesItem::hasChatBoxUpgrade);
+    public static ItemStack findFirstEquippedGlasses(EntityPlayer player) {
+        if (player == null) return null;
+
+        ItemStack glassesStack = player.inventory.armorInventory[3];
+        if (isGlasses(glassesStack)) return glassesStack;
+
+        if (OpenGlasses.tinkers) {
+            IInventory inventory = TPlayerStats.get(player).armor;
+            for (int i = 0; i != inventory.getSizeInventory(); i++) {
+                glassesStack = player.worldObj.isRemote ? ArmorProxyClient.armorExtended.getStackInSlot(i)
+                        : inventory.getStackInSlot(i);
+                if (isGlasses(glassesStack)) return glassesStack;
+            }
+        }
+
+        if (OpenGlasses.baubles) // try bauble
+        {
+            IInventory handler = BaublesApi.getBaubles(player);
+            if (handler != null) {
+                for (int i = 0; i < handler.getSizeInventory(); ++i) {
+                    glassesStack = handler.getStackInSlot(i);
+                    if (isGlasses(glassesStack)) return glassesStack;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isPlayerLinkedToChatboxAt(EntityPlayer player, Location loc) {
+        return findAllEquippedGlasses(player).stream().filter(OpenGlassesItem::hasChatBoxUpgrade).anyMatch((s) -> {
+            Location itemLoc = OpenGlassesItem.getUUID(s);
+            return itemLoc != null && itemLoc.equals(loc);
+        });
     }
 }

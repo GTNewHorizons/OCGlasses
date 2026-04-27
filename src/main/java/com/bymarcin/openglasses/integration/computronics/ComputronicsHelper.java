@@ -6,14 +6,10 @@ import pl.asie.computronics.api.chat.IChatListener;
 public class ComputronicsHelper {
 
     public static void register(Object handler) {
-        if (handler instanceof IChatListener) {
-            ChatAPI.registry.registerChatListener((IChatListener) handler);
-        }
+        ChatAPI.registry.registerChatListener((IChatListener) handler);
     }
 
     public static void unregister(Object handler) {
-        if (handler instanceof IChatListener) {
-            ChatAPI.registry.unregisterChatListener((IChatListener) handler);
-        }
+        ChatAPI.registry.unregisterChatListener((IChatListener) handler);
     }
 }

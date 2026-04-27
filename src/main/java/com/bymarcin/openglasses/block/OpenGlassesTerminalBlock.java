@@ -84,7 +84,6 @@ public class OpenGlassesTerminalBlock extends BlockContainer {
         OpenGlassesTerminalTileEntity te = getTileEntity(world, x, y, z, OpenGlassesTerminalTileEntity.class);
         if (te != null) {
             ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), te.getTerminalUUID());
-            te.onPreDestroy();
         }
     }
 

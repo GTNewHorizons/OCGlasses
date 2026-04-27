@@ -13,6 +13,15 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
 
+    private static Item chatBox;
+
+    private static Item getChatBox() {
+        if (chatBox == null) {
+            chatBox = Item.getItemFromBlock(GameRegistry.findBlock("computronics", "computronics.chatBox"));
+        }
+        return chatBox;
+    }
+
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
         if (getItemCount(inv) > getRecipeSize()) return false;
@@ -31,7 +40,7 @@ public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
         ItemStack glasses = findGlasses(inv);
 
         if (chatbox == null || glasses == null) return null;
-        return OpenGlassesItem.setChatBoxUpgrade(glasses, true);
+        return OpenGlassesItem.setChatBoxUpgrade(glasses.copy(), true);
     }
 
     @Override
@@ -60,9 +69,7 @@ public class RecipeOpenGlassesChatBoxUpgrade implements IRecipe {
         for (int i = 0; i < size; i++) {
             ItemStack stack = inv.getStackInSlot(i);
             if (stack == null || stack.getItem() == null) continue;
-            if (stack.getItem()
-                    != Item.getItemFromBlock(GameRegistry.findBlock("computronics", "computronics.chatBox")))
-                continue;
+            if (stack.getItem() != getChatBox()) continue;
             return stack;
         }
         return null;
