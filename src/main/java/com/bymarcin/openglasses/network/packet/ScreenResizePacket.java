@@ -13,7 +13,7 @@ public class ScreenResizePacket extends Packet<ScreenResizePacket, IMessage> {
     private int width;
     private int height;
     private Location locationUUID;
-    String playerName;
+    private String playerName;
 
     public ScreenResizePacket(int width, int height, Location locationUUID, String playerName) {
         this.width = width;
@@ -52,7 +52,7 @@ public class ScreenResizePacket extends Packet<ScreenResizePacket, IMessage> {
     @Override
     protected IMessage executeOnServer() {
         OpenGlassesTerminalTileEntity tile = locationUUID.getTerminal();
-        tile.onResize(playerName, width, height);
+        if (tile != null) tile.onResize(playerName, width, height);
         return null;
     }
 
