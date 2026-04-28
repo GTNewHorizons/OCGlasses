@@ -8,7 +8,7 @@ import com.gtnewhorizon.gtnhmixins.builders.MixinBuilder;
 public enum Mixins implements IMixins {
 
     RESIZE_EVENT(
-            new MixinBuilder("resize hook").addClientMixins("minecraft.MinecraftResizeMixin").setPhase(Phase.EARLY));
+            new MixinBuilder("resize_hook").addClientMixins("minecraft.MinecraftResizeMixin").setPhase(Phase.EARLY));
 
     private final MixinBuilder builder;
 

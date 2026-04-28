@@ -2,7 +2,10 @@
   "required": true,
   "minVersion": "0.8.5-GTNH",
   "package": "com.bymarcin.openglasses.mixins.early",
-  "refmap": "mixins.WitcheryExtras.refmap.json",
+  "refmap": "mixins.openglasses.refmap.json",
   "target": "@env(DEFAULT)",
-  "compatibilityLevel": "JAVA_8"
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "minecraft.MinecraftResizeMixin"
+  ]
 }
