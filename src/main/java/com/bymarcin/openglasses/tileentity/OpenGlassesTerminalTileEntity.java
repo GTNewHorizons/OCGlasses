@@ -4,9 +4,15 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.C01PacketChatMessage;
+import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.event.ServerChatEvent;
 
 import com.bymarcin.openglasses.OpenGlasses;
+import com.bymarcin.openglasses.integration.computronics.ComputronicsHelper;
+import com.bymarcin.openglasses.item.OpenGlassesItem;
 import com.bymarcin.openglasses.lua.LuaReference;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket.TerminalStatus;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
@@ -35,9 +41,12 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Connector;
 import li.cil.oc.api.network.Visibility;
 import li.cil.oc.api.prefab.TileEntityEnvironment;
+import pl.asie.computronics.api.chat.IChatListener;
 
-@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
+@Optional.InterfaceList({
+        @Optional.Interface(iface = "pl.asie.computronics.api.chat.IChatListener", modid = "computronics"),
+        @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment implements IChatListener {
 
     public HashMap<Integer, Widget> widgetList = new HashMap<>();
     int currID = 0;
@@ -114,6 +123,12 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         }
     }
 
+    public void onResize(String user, int width, int height) {
+        if (node != null) {
+            node.sendToReachable("computer.signal", "glasses_resized", user, width, height);
+        }
+    }
+
     @Callback(
             direct = true,
             doc = "function():string... -- Lists the name of all players currently wearing glasses linked to the terminal.")
@@ -144,6 +159,48 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         widgetList.clear();
         ServerSurface.instance.sendToUUID(new WidgetUpdatePacket(), getTerminalUUID());
         return new Object[] {};
+    }
+
+    @Callback(
+            doc = "function(player_name:string, message:string):bool, string -- Sends a message as the given player. Returns true on success, or false and an error message on failure.")
+    @Optional.Method(modid = "computronics")
+    public Object[] sendChatAs(Context context, Arguments args) {
+        String playerName = args.checkString(0);
+        String message = args.checkString(1);
+
+        EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
+        if (p == null) return new Object[] { false, "Failed to find the player." };
+
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
+            return new Object[] { false, "Missing ChatBox Upgrade on glasses." };
+
+        if (message.startsWith("/")) {
+            int spaceIndex = message.indexOf(" ");
+            String command = (spaceIndex == -1) ? message : message.substring(0, spaceIndex);
+            if (!OpenGlasses.allowedCommands.contains(command)) {
+                return new Object[] { false, "Command forbidden." };
+            }
+        }
+        C01PacketChatMessage packet = new C01PacketChatMessage(message);
+        p.playerNetServerHandler.processChatMessage(packet);
+        return new Object[] { true };
+    }
+
+    @Callback(
+            doc = "function(player_name:string, message:string):bool, string -- Sends a private message to the given player. Returns true on success, or false and an error message on failure.")
+    @Optional.Method(modid = "computronics")
+    public Object[] sendMessageTo(Context context, Arguments args) {
+        String playerName = args.checkString(0);
+        String message = args.checkString(1);
+
+        EntityPlayerMP p = ServerSurface.instance.getBindPlayerByName(getTerminalUUID(), playerName);
+        if (p == null) return new Object[] { false, "Failed to find the player." };
+
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
+            return new Object[] { false, "Missing ChatBox Upgrade on glasses." };
+
+        p.addChatMessage(new ChatComponentText(message));
+        return new Object[] { true };
     }
 
     @Callback(direct = true, doc = "function():number -- Generates a new random UUID.")
@@ -329,12 +386,8 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
         super.updateEntity();
         if (worldObj.isRemote) return;
         boolean lastStatus = isPowered;
-        if ((node() != null)
-                && ((Connector) node()).tryChangeBuffer(-widgetList.size() / 10f * OpenGlasses.energyMultiplier)) {
-            isPowered = true;
-        } else {
-            isPowered = false;
-        }
+        isPowered = (node() != null)
+                && ((Connector) node()).tryChangeBuffer(-widgetList.size() / 10f * OpenGlasses.energyMultiplier);
 
         if (lastStatus != isPowered) {
             ServerSurface.instance
@@ -345,5 +398,41 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment {
 
     public boolean isPowered() {
         return isPowered;
+    }
+
+    @Override
+    @Optional.Method(modid = "computronics")
+    public void receiveChatMessage(ServerChatEvent event) {
+        if (!ServerSurface.instance.isPlayerBoundAtLocation(getTerminalUUID(), event.player.getGameProfile().getId())) {
+            return;
+        }
+        if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(event.player, getTerminalUUID())) {
+            return;
+        }
+        if (node() != null) {
+            node().sendToReachable("computer.signal", "chat_message", event.username, event.message);
+        }
+    }
+
+    @Override
+    @Optional.Method(modid = "computronics")
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        if (OpenGlasses.computronics && !this.worldObj.isRemote) {
+            ComputronicsHelper.unregister(this);
+        }
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        if (OpenGlasses.computronics && !this.worldObj.isRemote) {
+            ComputronicsHelper.register(this);
+        }
     }
 }
