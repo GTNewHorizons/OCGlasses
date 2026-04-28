@@ -29,7 +29,7 @@ public class MinecraftResizeMixin {
             Location uuid = OpenGlassesItem.getUUID(s);
             if (uuid != null) {
                 Minecraft mc = Minecraft.getMinecraft();
-                ScaledResolution sr = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+                ScaledResolution sr = new ScaledResolution(mc, width <= 0 ? 1 : width, height <= 0 ? 1 : height);
                 packetHandler.sendToServer(
                         new ScreenResizePacket(
                                 sr.getScaledWidth(),
