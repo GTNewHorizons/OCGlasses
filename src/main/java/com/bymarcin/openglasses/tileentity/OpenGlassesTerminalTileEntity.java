@@ -197,7 +197,7 @@ public class OpenGlassesTerminalTileEntity extends TileEntityEnvironment impleme
         if (p == null) return new Object[] { false, "Failed to find the player." };
 
         if (!OpenGlassesItem.isPlayerLinkedToChatboxAt(p, getTerminalUUID()))
-            return new Object[] { false, "Missing ChaxBox Upgrade on glasses." };
+            return new Object[] { false, "Missing ChatBox Upgrade on glasses." };
 
         p.addChatMessage(new ChatComponentText(message));
         return new Object[] { true };
