@@ -1,8 +1,12 @@
 package com.bymarcin.openglasses;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.RecipeSorter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,10 +20,12 @@ import com.bymarcin.openglasses.network.packet.EquipGlassesPacket;
 import com.bymarcin.openglasses.network.packet.InteractOverlayPacket;
 import com.bymarcin.openglasses.network.packet.KeyboardInteractOverlayPacket;
 import com.bymarcin.openglasses.network.packet.OpenOverlayPacket;
+import com.bymarcin.openglasses.network.packet.ScreenResizePacket;
 import com.bymarcin.openglasses.network.packet.TerminalStatusPacket;
 import com.bymarcin.openglasses.network.packet.UnequipGlassesPacket;
 import com.bymarcin.openglasses.network.packet.WidgetUpdatePacket;
 import com.bymarcin.openglasses.proxy.CommonProxy;
+import com.bymarcin.openglasses.recipe.RecipeOpenGlassesChatBoxUpgrade;
 import com.bymarcin.openglasses.tileentity.OpenGlassesTerminalTileEntity;
 
 import cpw.mods.fml.common.Loader;
@@ -35,7 +41,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import li.cil.oc.api.Items;
 
-@Mod(modid = OpenGlasses.MODID, version = OpenGlasses.VERSION, dependencies = "required-after:OpenComputers@[1.4.0,)")
+@Mod(
+        modid = OpenGlasses.MODID,
+        version = OpenGlasses.VERSION,
+        dependencies = "required-after:OpenComputers@[1.4.0,);after:computronics")
 public class OpenGlasses {
 
     public static final String MODID = "openglasses";
@@ -56,12 +65,14 @@ public class OpenGlasses {
 
     public static boolean baubles = false;
     public static boolean tinkers = false;
+    public static boolean computronics = false;
 
     public static OpenGlassesItem openGlasses;
     public static OpenGlassesTerminalBlock openTerminal;
 
     public static int energyBuffer = 100;
     public static double energyMultiplier = 1;
+    public static List<String> allowedCommands;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -72,6 +83,12 @@ public class OpenGlasses {
         energyMultiplier = config
                 .get("Energy", "energyMultiplier", 1.0, "PowerDrain= (NumberOfWidgets / 10) * energyMultiplier")
                 .getDouble(1.0);
+        allowedCommands = Arrays.asList(
+                config.get(
+                        "ChatBox",
+                        "allowedCommands",
+                        new String[] { "/msg", "/w", "/tell" },
+                        "List of commands that glasses are allowed to use via the ChatBox.").getStringList());
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
     }
 
@@ -79,6 +96,7 @@ public class OpenGlasses {
     public void init(FMLInitializationEvent event) {
         OpenGlasses.baubles = Loader.isModLoaded("Baubles");
         OpenGlasses.tinkers = Loader.isModLoaded("TConstruct");
+        OpenGlasses.computronics = Loader.isModLoaded("computronics");
 
         GlassesNetworkRegistry.registerPacket(0, BlockInteractPacket.class, Side.SERVER);
         GlassesNetworkRegistry.registerPacket(1, CloseOverlayPacket.class, Side.SERVER);
@@ -89,6 +107,7 @@ public class OpenGlasses {
         GlassesNetworkRegistry.registerPacket(6, UnequipGlassesPacket.class, Side.SERVER);
         GlassesNetworkRegistry.registerPacket(7, WidgetUpdatePacket.class, Side.CLIENT);
         GlassesNetworkRegistry.registerPacket(8, TerminalStatusPacket.class, Side.CLIENT);
+        GlassesNetworkRegistry.registerPacket(9, ScreenResizePacket.class, Side.SERVER);
 
         GameRegistry.registerBlock(openTerminal = new OpenGlassesTerminalBlock(), "openglassesterminal");
         GameRegistry.registerTileEntity(OpenGlassesTerminalTileEntity.class, "openglassesterminal");
@@ -109,6 +128,14 @@ public class OpenGlasses {
                 .addRecipe(new ItemStack(openGlasses), "SCS", " W ", "   ", 'S', screen, 'W', wlanCard, 'C', graphics);
         GameRegistry.addRecipe(new ItemStack(openTerminal), "R  ", "S  ", "M  ", 'S', server, 'R', ram, 'M', cpu);
 
+        if (computronics) {
+            GameRegistry.addRecipe(new RecipeOpenGlassesChatBoxUpgrade());
+            RecipeSorter.register(
+                    MODID + "OpenGlassesChatBoxUpgrade",
+                    RecipeOpenGlassesChatBoxUpgrade.class,
+                    RecipeSorter.Category.SHAPELESS,
+                    "");
+        }
         config.save();
     }
 }

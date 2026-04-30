@@ -157,4 +157,18 @@ public class ServerSurface {
         return null;
     }
 
+    public EntityPlayerMP getBindPlayerByName(Location l, String name) {
+        EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(name);
+        if (player == null) return null;
+        UUID playerUUID = player.getGameProfile().getId();
+        if (isPlayerBoundAtLocation(l, playerUUID)) {
+            return player;
+        }
+        return null;
+    }
+
+    public boolean isPlayerBoundAtLocation(Location l, UUID uuid) {
+        Location boundLocation = this.players.get(uuid);
+        return boundLocation != null && boundLocation.equals(l);
+    }
 }
