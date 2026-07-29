@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +27,7 @@ public class MinecraftResizeMixin {
 
     @Inject(method = "resize", at = @At("HEAD"))
     private void onResize(int width, int height, CallbackInfo ci) {
+        if (!Loader.isInState(LoaderState.ModState.SERVER_STARTED)) return;
         findAllEquippedGlasses(thePlayer).forEach((s) -> {
             Location uuid = OpenGlassesItem.getUUID(s);
             if (uuid != null) {
