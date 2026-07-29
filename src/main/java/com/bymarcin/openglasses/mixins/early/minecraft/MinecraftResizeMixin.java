@@ -27,7 +27,7 @@ public class MinecraftResizeMixin {
 
     @Inject(method = "resize", at = @At("HEAD"))
     private void onResize(int width, int height, CallbackInfo ci) {
-        if (!Loader.isInState(LoaderState.ModState.SERVER_STARTED)) return;
+        if (!Loader.isInState(LoaderState.SERVER_STARTED)) return;
         findAllEquippedGlasses(thePlayer).forEach((s) -> {
             Location uuid = OpenGlassesItem.getUUID(s);
             if (uuid != null) {
