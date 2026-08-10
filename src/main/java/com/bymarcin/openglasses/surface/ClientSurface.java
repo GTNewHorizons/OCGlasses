@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
@@ -86,9 +87,12 @@ public class ClientSurface {
         if (!isPowered || !haveGlasses || lastBind == null) return;
         GL11.glPushMatrix();
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        double playerX = player.prevPosX + (player.posX - player.prevPosX) * event.partialTicks;
-        double playerY = player.prevPosY + (player.posY - player.prevPosY) * event.partialTicks;
-        double playerZ = player.prevPosZ + (player.posZ - player.prevPosZ) * event.partialTicks;
+        EntityLivingBase viewEntity = Minecraft.getMinecraft().renderViewEntity != null
+                ? Minecraft.getMinecraft().renderViewEntity
+                : player;
+        double playerX = viewEntity.prevPosX + (viewEntity.posX - viewEntity.prevPosX) * event.partialTicks;
+        double playerY = viewEntity.prevPosY + (viewEntity.posY - viewEntity.prevPosY) * event.partialTicks;
+        double playerZ = viewEntity.prevPosZ + (viewEntity.posZ - viewEntity.prevPosZ) * event.partialTicks;
         GL11.glTranslated(-playerX, -playerY, -playerZ);
         GL11.glTranslated(lastBind.x, lastBind.y, lastBind.z);
         GL11.glDisable(GL11.GL_LIGHTING);
