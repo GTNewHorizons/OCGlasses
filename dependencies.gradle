@@ -1,10 +1,10 @@
 // Add your dependencies here
 
 dependencies {
-    api('com.github.GTNewHorizons:OpenComputers:1.11.13-GTNH:dev')
-    api('com.github.GTNewHorizons:Baubles-Expanded:2.2.11-GTNH:dev')
+    api('com.github.GTNewHorizons:OpenComputers:1.12.55-GTNH:dev')
+    api('com.github.GTNewHorizons:Baubles-Expanded:2.2.22-GTNH:dev')
 
-    compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.13.18-GTNH:dev")
-    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.8.40-GTNH:dev")
-    compileOnly("com.github.GTNewHorizons:Computronics:1.9.3-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.14.97-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.8.121-GTNH:dev")
+    compileOnly("com.github.GTNewHorizons:Computronics:1.9.9-GTNH:dev")
 }
