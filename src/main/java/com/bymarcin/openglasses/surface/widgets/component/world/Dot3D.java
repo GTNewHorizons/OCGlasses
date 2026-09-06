@@ -1,21 +1,19 @@
 package com.bymarcin.openglasses.surface.widgets.component.world;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DPositionable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IScalable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IThroughVisibility;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IViewDistance;
-import com.bymarcin.openglasses.utils.OGUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -79,24 +77,14 @@ public class Dot3D extends Widget
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderDot3D implements IRenderableWidget {
+    class RenderDot3D extends WorldWidgetRenderer {
 
-        final EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        RenderDot3D() {
+            super(Dot3D.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-
-            if (!OGUtils.inRange(playerX, playerY, playerZ, x, y, z, distance)) {
-                return;
-            }
-
-            GL11.glPushMatrix();
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        protected void draw(EntityPlayer player) {
             GL11.glTranslated(x, y, z);
 
             GL11.glRotated(-player.rotationYaw, 0, 1, 0);
@@ -112,21 +100,7 @@ public class Dot3D extends Widget
             GL11.glVertex3f(-size / 2, size / 2, 0);
 
             GL11.glEnd();
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
-        }
-
     }
 
     @Override

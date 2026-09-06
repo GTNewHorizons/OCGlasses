@@ -1,15 +1,13 @@
 package com.bymarcin.openglasses.surface.widgets.component.world;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MovingObjectPosition;
 
 import org.lwjgl.opengl.GL11;
 
-import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DPositionable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
@@ -17,7 +15,6 @@ import com.bymarcin.openglasses.surface.widgets.core.attribute.ILookable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IScalable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IThroughVisibility;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IViewDistance;
-import com.bymarcin.openglasses.utils.OGUtils;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -95,32 +92,17 @@ public class Cube3D extends Widget
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderCube3D implements IRenderableWidget {
+    class RenderCube3D extends WorldWidgetRenderer {
 
         float tr = (1 - scale) / 2f;
 
-        @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            if (OGUtils.inRange(playerX, playerY, playerZ, x, y, z, distance)) {
-                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player, 200);
-                if (isLookingAtEnable
-                        && (pos == null || pos.blockX != lookAtX || pos.blockY != lookAtY || pos.blockZ != lookAtZ))
-                    return;
-                drawQuad(x, y, z, alpha);
-
-            }
+        RenderCube3D() {
+            super(Cube3D.this);
         }
 
-        public void drawQuad(float posX, float posY, float PosZ, float alpha) {
-            GL11.glTranslated(posX, posY, PosZ);
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-
-            GL11.glPushMatrix();
+        @Override
+        protected void draw(EntityPlayer player) {
+            GL11.glTranslatef(x, y, z);
             GL11.glTranslatef(tr, tr, tr);
             GL11.glScalef(scale, scale, scale);
             GL11.glBegin(GL11.GL_QUADS); // Draw The Cube Using quads
@@ -155,23 +137,7 @@ public class Cube3D extends Widget
             GL11.glVertex3f(1.0f, 0f, 1.0f); // Bottom Left Of The Quad (Right)
             GL11.glVertex3f(1.0f, 0f, 0f); // Bottom Right Of The Quad (Right)
             GL11.glEnd(); // End Drawing The Cube
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glTranslated(-posX, -posY, -PosZ);
-
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
-        }
-
     }
 
     @Override

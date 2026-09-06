@@ -2,16 +2,16 @@ package com.bymarcin.openglasses.surface.widgets.component.face;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
+import com.bymarcin.openglasses.surface.OverlayWidgetRenderer;
 import com.bymarcin.openglasses.surface.WidgetType;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IRotatable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.ITextable;
 import com.bymarcin.openglasses.utils.OGUtils;
+import com.bymarcin.openglasses.utils.RenderState;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -50,32 +50,27 @@ public class Text extends Dot implements ITextable, IRotatable {
         return new RenderText();
     }
 
-    class RenderText implements IRenderableWidget {
+    class RenderText extends OverlayWidgetRenderer {
 
         int color = OGUtils.getIntFromColor(r, g, b, alpha);
         FontRenderer fontRender = Minecraft.getMinecraft().fontRenderer;
 
+        RenderText() {
+            super(Text.this);
+        }
+
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glPushMatrix();
+        protected void setupMode() {
+            RenderState.textured();
+        }
+
+        @Override
+        protected void draw() {
             GL11.glTranslatef(x, y, 100);
             GL11.glScaled(size, size, 0);
             GL11.glRotatef(rotation, 0.0f, 0.0f, 1.0f);
             fontRender.drawString(text, 0, 0, color);
-            GL11.glPopMatrix();
-
         }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.GameOverlayLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
-        }
-
     }
 
     @Override
