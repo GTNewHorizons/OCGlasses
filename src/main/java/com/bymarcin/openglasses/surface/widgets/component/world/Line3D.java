@@ -5,9 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DVertex;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
@@ -80,36 +80,20 @@ public class Line3D extends Widget implements IAlpha, IColorizable, I3DVertex, I
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderLine3D implements IRenderableWidget {
+    class RenderLine3D extends WorldWidgetRenderer {
+
+        RenderLine3D() {
+            super(Line3D.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glPushMatrix();
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        protected void draw(EntityPlayer player) {
             GL11.glLineWidth(size);
             GL11.glBegin(GL11.GL_LINES);
             GL11.glColor4f(r, g, b, alpha);
             GL11.glVertex3f(x[0], y[0], z[0]);
             GL11.glVertex3f(x[1], y[1], z[1]);
             GL11.glEnd();
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-        }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
         }
 
     }

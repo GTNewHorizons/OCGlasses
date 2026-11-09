@@ -5,9 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DVertex;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
@@ -82,17 +82,14 @@ public class Triangle3D extends Widget implements IAlpha, IColorizable, IThrough
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderTriangle3D implements IRenderableWidget {
+    class RenderTriangle3D extends WorldWidgetRenderer {
+
+        RenderTriangle3D() {
+            super(Triangle3D.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glPushMatrix();
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        protected void draw(EntityPlayer player) {
             GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
             GL11.glColor4f(r, g, b, alpha);
             GL11.glVertex3f(x[0], y[0], z[0]);
@@ -100,19 +97,6 @@ public class Triangle3D extends Widget implements IAlpha, IColorizable, IThrough
             GL11.glVertex3f(x[2], y[2], z[2]);
             GL11.glVertex3f(x[0], y[0], z[0]);
             GL11.glEnd();
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-        }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
         }
 
     }

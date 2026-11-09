@@ -1,12 +1,11 @@
 package com.bymarcin.openglasses.surface.widgets.component.face;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
 
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
+import com.bymarcin.openglasses.surface.OverlayWidgetRenderer;
 import com.bymarcin.openglasses.surface.WidgetType;
 
 import cpw.mods.fml.relauncher.Side;
@@ -41,14 +40,14 @@ public class Quad extends TriangleWidget {
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderQuad implements IRenderableWidget {
+    class RenderQuad extends OverlayWidgetRenderer {
+
+        RenderQuad() {
+            super(Quad.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        protected void draw() {
             Tessellator tessellator = Tessellator.instance;
             tessellator.startDrawing(GL11.GL_QUADS);
             tessellator.setColorRGBA_F(r, g, b, alpha);
@@ -57,22 +56,7 @@ public class Quad extends TriangleWidget {
             tessellator.addVertex(x[2], y[2], 0);
             tessellator.addVertex(x[3], y[3], 0);
             tessellator.draw();
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-
         }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.GameOverlayLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
-        }
-
     }
 
     @Override

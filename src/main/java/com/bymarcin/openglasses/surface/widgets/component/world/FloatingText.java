@@ -3,15 +3,13 @@ package com.bymarcin.openglasses.surface.widgets.component.world;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MovingObjectPosition;
 
 import org.lwjgl.opengl.GL11;
 
-import com.bymarcin.openglasses.surface.ClientSurface;
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.I3DPositionable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IColorizable;
@@ -21,6 +19,7 @@ import com.bymarcin.openglasses.surface.widgets.core.attribute.ITextable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IThroughVisibility;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IViewDistance;
 import com.bymarcin.openglasses.utils.OGUtils;
+import com.bymarcin.openglasses.utils.RenderState;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.relauncher.Side;
@@ -123,33 +122,27 @@ public class FloatingText extends Widget implements IViewDistance, ILookable, I3
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderableFloatingText implements IRenderableWidget {
+    class RenderableFloatingText extends WorldWidgetRenderer {
 
         FontRenderer fontRender = Minecraft.getMinecraft().fontRenderer;
         double offsetX = fontRender.getStringWidth(text) / 2D;
         double offsetY = fontRender.FONT_HEIGHT / 2D;
         int color = OGUtils.getIntFromColor(r, g, b, alpha);
 
+        RenderableFloatingText() {
+            super(FloatingText.this);
+        }
+
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            if (!OGUtils.inRange(playerX, playerY, playerZ, x, y, z, viewDistance)) {
-                return;
-            }
-            if (isLookingAtEnable) {
-                MovingObjectPosition pos = ClientSurface.getBlockCoordsLookingAt(player, 200);
-                if (pos == null || pos.blockX != lookingAtX || pos.blockY != lookingAtY || pos.blockZ != lookingAtZ)
-                    return;
-            }
-            GL11.glPushMatrix();
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
+        protected void setupMode() {
+            RenderState.textured();
+        }
+
+        @Override
+        protected void draw(EntityPlayer player) {
             GL11.glTranslated(x, y, z);
             GL11.glScaled(scale, scale, scale);
             GL11.glTranslated(offsetX, offsetY, 0);
-            GL11.glPushMatrix();
             GL11.glRotated(180, 0, 0, 1);
 
             GL11.glTranslated(offsetX, offsetY, 0);
@@ -160,21 +153,7 @@ public class FloatingText extends Widget implements IViewDistance, ILookable, I3
             GL11.glTranslated(-offsetX, -fontRender.FONT_HEIGHT / 2D, 0);
 
             fontRender.drawString(text, 0, 0, color);
-            GL11.glPopMatrix();
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
         }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
-        }
-
     }
 
     @Override

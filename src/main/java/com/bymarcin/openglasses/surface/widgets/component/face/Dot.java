@@ -1,12 +1,9 @@
 package com.bymarcin.openglasses.surface.widgets.component.face;
 
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.EntityPlayer;
-
-import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
+import com.bymarcin.openglasses.surface.OverlayWidgetRenderer;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IAlpha;
@@ -64,14 +61,14 @@ public class Dot extends Widget implements IPositionable, IColorizable, IAlpha, 
     }
 
     @SideOnly(Side.CLIENT)
-    public class RenderableDot implements IRenderableWidget {
+    public class RenderableDot extends OverlayWidgetRenderer {
+
+        public RenderableDot() {
+            super(Dot.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        protected void draw() {
             Tessellator tessellator = Tessellator.instance;
             tessellator.startDrawingQuads();
             tessellator.setColorRGBA_F(r, g, b, alpha);
@@ -80,19 +77,6 @@ public class Dot extends Widget implements IPositionable, IColorizable, IAlpha, 
             tessellator.addVertex(x + size, y + size, 0);
             tessellator.addVertex(x + size, y, 0);
             tessellator.draw();
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-        }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.GameOverlayLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
         }
     }
 

@@ -1,16 +1,16 @@
 package com.bymarcin.openglasses.surface.widgets.component.face;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
+import com.bymarcin.openglasses.surface.OverlayWidgetRenderer;
 import com.bymarcin.openglasses.surface.Widget;
 import com.bymarcin.openglasses.surface.WidgetType;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IItemable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IPositionable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IRotatable;
 import com.bymarcin.openglasses.surface.widgets.core.attribute.IScalable;
+import com.bymarcin.openglasses.utils.RenderState;
 import com.bymarcin.openglasses.utils.RenderUtils;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -107,25 +107,24 @@ public class ItemIcon extends Widget implements IItemable, IPositionable, IScala
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderableIcon implements IRenderableWidget {
+    class RenderableIcon extends OverlayWidgetRenderer {
+
+        RenderableIcon() {
+            super(ItemIcon.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
+        protected void setupMode() {
+            RenderState.textured();
+        }
+
+        @Override
+        protected void draw() {
             try {
                 RenderUtils.renderItemStackOnGUI(itemStack, x, y, scale, rotation);
             } catch (RuntimeException e) {
                 itemStack = null;
             }
-        }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.GameOverlayLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
         }
     }
 }

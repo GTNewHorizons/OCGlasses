@@ -19,6 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.widgets.component.face.Text;
 import com.bymarcin.openglasses.utils.Location;
+import com.bymarcin.openglasses.utils.RenderState;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -67,25 +68,27 @@ public class ClientSurface {
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent evt) {
-        if (evt.type == ElementType.HELMET && evt instanceof RenderGameOverlayEvent.Post && haveGlasses) {
-            if (!isPowered || !haveGlasses || lastBind == null) {
+        if (evt.type != ElementType.HELMET || !(evt instanceof RenderGameOverlayEvent.Post) || !haveGlasses) return;
+
+        RenderState.beginOverlay();
+        try {
+            if (!isPowered || lastBind == null) {
                 noPowerRender.render(null, 0, 0, 0);
                 return;
             }
-            GL11.glPushMatrix();
             // GL11.glScaled(evt.resolution.getScaledWidth_double()/512D,
             // evt.resolution.getScaledHeight_double()/512D*16D/9D, 0);
             for (IRenderableWidget renderable : renderables.values()) {
                 if (renderable.shouldWidgetBeRendered()) renderable.render(null, 0, 0, 0);
             }
-            GL11.glPopMatrix();
+        } finally {
+            RenderState.endOverlay();
         }
     }
 
     @SubscribeEvent
     public void renderWorldLastEvent(RenderWorldLastEvent event) {
         if (!isPowered || !haveGlasses || lastBind == null) return;
-        GL11.glPushMatrix();
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
         EntityLivingBase viewEntity = Minecraft.getMinecraft().renderViewEntity != null
                 ? Minecraft.getMinecraft().renderViewEntity
@@ -93,23 +96,19 @@ public class ClientSurface {
         double playerX = viewEntity.prevPosX + (viewEntity.posX - viewEntity.prevPosX) * event.partialTicks;
         double playerY = viewEntity.prevPosY + (viewEntity.posY - viewEntity.prevPosY) * event.partialTicks;
         double playerZ = viewEntity.prevPosZ + (viewEntity.posZ - viewEntity.prevPosZ) * event.partialTicks;
-        GL11.glTranslated(-playerX, -playerY, -playerZ);
-        GL11.glTranslated(lastBind.x, lastBind.y, lastBind.z);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDepthMask(false);
-        // Start Drawing In World
 
-        for (IRenderableWidget renderable : renderablesWorld.values()) {
-            if (renderable.shouldWidgetBeRendered())
-                renderable.render(player, playerX - lastBind.x, playerY - lastBind.y, playerZ - lastBind.z);
+        RenderState.beginWorld();
+        try {
+            GL11.glTranslated(-playerX, -playerY, -playerZ);
+            GL11.glTranslated(lastBind.x, lastBind.y, lastBind.z);
+
+            for (IRenderableWidget renderable : renderablesWorld.values()) {
+                if (renderable.shouldWidgetBeRendered())
+                    renderable.render(player, playerX - lastBind.x, playerY - lastBind.y, playerZ - lastBind.z);
+            }
+        } finally {
+            RenderState.endWorld();
         }
-
-        // Stop Drawing In World
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
     }
 
     public static MovingObjectPosition getBlockCoordsLookingAt(EntityPlayer player, int distance) {

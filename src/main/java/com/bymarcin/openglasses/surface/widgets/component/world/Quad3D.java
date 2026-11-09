@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 
 import com.bymarcin.openglasses.surface.IRenderableWidget;
-import com.bymarcin.openglasses.surface.RenderType;
 import com.bymarcin.openglasses.surface.WidgetType;
+import com.bymarcin.openglasses.surface.WorldWidgetRenderer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -48,19 +48,14 @@ public class Quad3D extends Triangle3D {
     }
 
     @SideOnly(Side.CLIENT)
-    class RenderQuad3D implements IRenderableWidget {
+    class RenderQuad3D extends WorldWidgetRenderer {
+
+        RenderQuad3D() {
+            super(Quad3D.this);
+        }
 
         @Override
-        public void render(EntityPlayer player, double playerX, double playerY, double playerZ) {
-            GL11.glPushMatrix();
-
-            if (isThroughVisibility) {
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-            } else {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-            }
-
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+        protected void draw(EntityPlayer player) {
             GL11.glBegin(GL11.GL_QUAD_STRIP);
             GL11.glColor4f(r, g, b, alpha);
 
@@ -72,19 +67,6 @@ public class Quad3D extends Triangle3D {
             GL11.glVertex3f(x[1], y[1], z[1]);
 
             GL11.glEnd();
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-        }
-
-        @Override
-        public RenderType getRenderType() {
-            return RenderType.WorldLocated;
-        }
-
-        @Override
-        public boolean shouldWidgetBeRendered() {
-            return isVisible();
         }
 
     }
